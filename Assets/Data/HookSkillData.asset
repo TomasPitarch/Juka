@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33ba4479f4a8479409fad522ac268e6c, type: 3}
+  m_Name: HookSkillData
+  m_EditorClassIdentifier: 
+  _coolDownTime: 5
+  _skillRange: 10
+  _skillSpeed: 10
+  hookHead: {fileID: 2455230683363089177, guid: 3d171a33f9cadab46bd0260dc7e8bc33,
+    type: 3}
+  myMaterial: {fileID: 2100000, guid: faaa2049522d2f2479f4d2cbf3428710, type: 2}
