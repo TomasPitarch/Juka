@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "HookSkillData", menuName = "ScriptableObjects/SkillsData", order = 1)]
+[CreateAssetMenu(fileName = "HookSkillData", menuName = "ScriptableObjects/HookSkillsData", order = 1)]
 public class HookSkill_SO : ScriptableObject
 {
     public float _coolDownTime;

@@ -16,10 +16,10 @@ TagManager:
   - 
   - Walkeable
   - 
-  - 
-  - 
-  - 
-  - 
+  - CharacterTeam1
+  - CharacterTeam2
+  - NetStatusTeam1
+  - NetStatusTeam2
   - 
   - 
   - 

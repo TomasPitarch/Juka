@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class HookSkill : MonoBehaviour
+public class HookSkill : Skill,IReseteable
 {
 
     [SerializeField]
@@ -15,8 +15,7 @@ public class HookSkill : MonoBehaviour
     [SerializeField]
     GameObject skillSpawnPoint;
 
-    bool _cooldown;
-    float _cdTime;
+   
     float _skillRange;
     float _skillSpeed;
 
@@ -28,6 +27,8 @@ public class HookSkill : MonoBehaviour
 
 
     LineRenderer myLine;
+    
+
     private void Start()
     {
 
@@ -40,6 +41,7 @@ public class HookSkill : MonoBehaviour
 
         //HookHeadCreation and event suscription//
         hookHead = Instantiate(data.hookHead).GetComponent<HookHead>();
+        hookHead.Init();
         hookHead.OnObjectCollision += HookColitionHanlder;
 
         //LineRendererHook creation and config//
@@ -52,40 +54,26 @@ public class HookSkill : MonoBehaviour
         myLine.enabled = false;
                
     }
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            HookColitionHanlder();
-        }
-    }
+    
     void HookColitionHanlder()
     {
         _hookColition = true;
     }
     public void CastHook(Vector3 point)
     {
-        point.y = skillSpawnPoint.transform.position.y;
-
         if (!_cooldown)
         {
+            print("hook");
+
+            point.y = skillSpawnPoint.transform.position.y;
             SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
             HookBehaviour();
             CoolDownTimer();
         }
     }
-    async void CoolDownTimer()
-    {
-        print("TimerComienza");
-        _cooldown = true;
-        await Task.Delay((int)_cdTime*1000);
-        _cooldown = false;
-        print("TimerTermina");
-    }
-
+   
     async void HookBehaviour()
     {
-        //print("Hook");
         myLine.enabled = true;
 
         hookHead.HookHeadActive(skillSpawnPoint.transform.position);
@@ -94,7 +82,6 @@ public class HookSkill : MonoBehaviour
 
         while (!_hookColition && distance<_skillRange)
         {
-            //print("yendo");
             var distanceToMove = SkillDirection * _skillSpeed * Time.deltaTime;
             hookHead.Move(distanceToMove);
             distance = (HookInitialPosition - hookHead.transform.position).magnitude;
@@ -105,15 +92,15 @@ public class HookSkill : MonoBehaviour
             await Task.Yield();
         }
 
-        if(_hookColition)
-        {
-            print("Colision el hook asique se termina");
-            hookHead.HookHeadOff();
-            _hookColition = false;
-            myLine.enabled = false;
+        //if(_hookColition)
+        //{
+        //    print("Colision el hook asique se termina");
+        //    hookHead.HookHeadOff();
+        //    _hookColition = false;
+        //    myLine.enabled = false;
 
-            return;
-        }
+        //    return;
+        //}
 
 
         distance = (skillSpawnPoint.transform.position - hookHead.transform.position).magnitude;
@@ -135,9 +122,12 @@ public class HookSkill : MonoBehaviour
 
         hookHead.HookHeadOff();
         myLine.enabled = false;
-        //print("retorno completamente");
 
     }
-    
-       
+
+    public void ResetCDs()
+    {
+        _tokenCoolDownTimer = false;
+        _cooldown = false;
+    }
 }

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NetSkill : MonoBehaviour
+public class NetSkill : Skill, IReseteable
 {
 
     [SerializeField]
@@ -15,9 +15,8 @@ public class NetSkill : MonoBehaviour
     [SerializeField]
     GameObject skillSpawnPoint;
 
-    bool _cooldown;
-    float _cdTime;
-    float _skillRange;
+   
+    float _lifeTime;
     float _skillSpeed;
 
     bool _netColition;
@@ -27,40 +26,40 @@ public class NetSkill : MonoBehaviour
 
         //Datatake//
         _cdTime = data._coolDownTime;
-        _skillRange = data._skillRange;
+        _lifeTime = data._lifeTime;
         _skillSpeed = data._skillSpeed;
         _cooldown = false;
         _netColition = false;
 
-        //HookHeadCreation and event suscription//
-        net = Instantiate(data.hookHead).GetComponent<HookHead>();
-        net.OnObjectCollision += HookColitionHanlder;
-
     }
    
-    void HookColitionHanlder()
+    void NetColitionHanlder()
     {
         _netColition = true;
     }
     public void CastNet(Vector3 point)
     {
-        point.y = skillSpawnPoint.transform.position.y;
-
         if (!_cooldown)
         {
+            print("Net");
+            SpawnNet();
+
+            point.y = skillSpawnPoint.transform.position.y;
             SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
-            HookBehaviour();
+            net.Init(skillSpawnPoint.transform.position, SkillDirection, _skillSpeed,_lifeTime);
             CoolDownTimer();
         }
     }
-    async void CoolDownTimer()
+    
+    void SpawnNet()
     {
-        print("TimerComienza");
-        _cooldown = true;
-        await Task.Delay((int)_cdTime * 1000);
-        _cooldown = false;
-        print("TimerTermina");
+        //HookHeadCreation and event suscription//
+        net = Instantiate(data.Net).GetComponent<Net>();
+        net.OnObjectCollision += NetColitionHanlder;
     }
 
-    
+    public void ResetCDs()
+    {
+        _cooldown = false;
+    }
 }

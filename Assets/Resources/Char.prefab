@@ -16,8 +16,12 @@ GameObject:
   - component: {fileID: 7932856819622059891}
   - component: {fileID: 8830802566711791632}
   - component: {fileID: 7261612477939960313}
+  - component: {fileID: 6763661594190281186}
+  - component: {fileID: 8366660523103370967}
+  - component: {fileID: 9100865560173358466}
+  - component: {fileID: 3886553564748642602}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Char
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -134,6 +138,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myNavMesh: {fileID: 0}
   hookSkill: {fileID: 7261612477939960313}
+  netSkill: {fileID: 0}
+  shiftSkill: {fileID: 0}
 --- !u!114 &8830802566711791632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,8 +165,60 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   data: {fileID: 11400000, guid: 4ceb688ebb371b54bb3eaae8a84a992f, type: 2}
-  hookHead: {fileID: 0}
   skillSpawnPoint: {fileID: 9159172108906700532}
+--- !u!114 &6763661594190281186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7256974757693223968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c6366ce0ff7174408b73c2027b63f91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data: {fileID: 11400000, guid: c556e271e788da748b0d6b353e16f86b, type: 2}
+  skillSpawnPoint: {fileID: 9159172108906700532}
+--- !u!114 &8366660523103370967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7256974757693223968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cc0c1004abb00842bcfb7a1cc79499d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shiftTime: 1
+--- !u!114 &9100865560173358466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7256974757693223968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 200e808620402ee4f97a50b2ad3330ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GoldAmount: 100
+--- !u!114 &3886553564748642602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7256974757693223968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 46a4377bdaaf10a4c8aa2c1697047f36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillCost: 50
 --- !u!1 &9159172108906700532
 GameObject:
   m_ObjectHideFlags: 0

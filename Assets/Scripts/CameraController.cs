@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour
     {
         Vector3 pos = transform.position;
 
-        if(Input.GetKey(KeyCode.W)||Input.mousePosition.y >=Screen.height-panBorderThickness)
+        if(Input.mousePosition.y >=Screen.height-panBorderThickness)
         {
             pos.z += panSpeed * Time.deltaTime;
         }

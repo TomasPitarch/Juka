@@ -6,10 +6,17 @@ using UnityEngine;
 public class HookHead : MonoBehaviour
 {
     public event Action OnObjectCollision = delegate { };
+    public event Action OnHooksEnd = delegate { };
 
+    M CharacterHooked;
+    public Team team;
     private void Start()
     {
         HookHeadOff();
+    }
+    public void Init(Team teamToSet)
+    {
+        team = teamToSet;
     }
     public void HookHeadActive(Vector3 FromActivePosition)
     {
@@ -20,6 +27,8 @@ public class HookHead : MonoBehaviour
     public void HookHeadOff()
     {
         gameObject.GetComponent<Renderer>().enabled = false;
+        CharacterHooked = null;
+        OnHooksEnd();
     }
     
     public void OnCollisionEnter(Collision collision)
@@ -28,7 +37,11 @@ public class HookHead : MonoBehaviour
         if (collision.gameObject.tag=="Character")
         {
             print("colision de hook con character");
-            collision.gameObject.GetComponent<M>().Hooked();
+
+            CharacterHooked = collision.gameObject.GetComponent<M>();
+            CharacterHooked.Hooked(this);
+           
+            
             OnObjectCollision();
         }
     }
@@ -36,5 +49,12 @@ public class HookHead : MonoBehaviour
     public void Move(Vector3 distanceToMove)
     {
         transform.position += distanceToMove;
+
+        if(CharacterHooked)
+        {
+            CharacterHooked.transform.position += distanceToMove;
+        }
     }
+
+    
 }
