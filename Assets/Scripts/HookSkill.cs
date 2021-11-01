@@ -15,7 +15,8 @@ public class HookSkill : Skill,IReseteable
     [SerializeField]
     GameObject skillSpawnPoint;
 
-   
+    Team myTeam;
+
     float _skillRange;
     float _skillSpeed;
 
@@ -41,7 +42,7 @@ public class HookSkill : Skill,IReseteable
 
         //HookHeadCreation and event suscription//
         hookHead = Instantiate(data.hookHead).GetComponent<HookHead>();
-        hookHead.Init();
+        hookHead.Init(myTeam);
         hookHead.OnObjectCollision += HookColitionHanlder;
 
         //LineRendererHook creation and config//
