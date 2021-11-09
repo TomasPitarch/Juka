@@ -33,5 +33,7 @@ public class ShiftSkill : Skill, IReseteable
     public void ResetCDs()
     {
         _cooldown = false;
+
+        _tokenCoolDownTimer = false;
     }
 }

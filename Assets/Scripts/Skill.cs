@@ -1,13 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Photon.Realtime;
+using Photon.Pun;
 using UnityEngine;
 
-public class Skill : MonoBehaviour
+public class Skill : MonoBehaviourPun
 {
     protected bool _cooldown;
     protected float _cdTime;
-    protected bool _tokenCoolDownTimer = true;
+    protected bool _tokenCoolDownTimer = false;
 
     // Start is called before the first frame update
     void Start()

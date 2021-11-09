@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
+using Photon.Realtime;
+using Photon.Pun;
 using UnityEngine;
 
 public class NetSkill : Skill, IReseteable
@@ -54,7 +56,7 @@ public class NetSkill : Skill, IReseteable
     void SpawnNet()
     {
         //HookHeadCreation and event suscription//
-        net = Instantiate(data.Net).GetComponent<Net>();
+        net = PhotonNetwork.Instantiate("Net",Vector3.zero,Quaternion.identity).GetComponent<Net>();
         net.OnObjectCollision += NetColitionHanlder;
     }
 

@@ -39,6 +39,27 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+  - CreatePlayer
+  - Skill1
+  - Skill2
+  - Skill3
+  - Skill4
+  - ClonGhostForm
+  - ClonGhostFormEnd
+  - GhostFormEnd
+  - GhostFormStart
+  - SetPlayerOnTeamA
+  - SetPlayerOnTeamB
+  - SetPlayerOnWaitTeam
+  - SynchroTeamA
+  - SynchroTeamB
+  - SynchroWaitTeam
+  - TeamWaitUpdate
+  - TeamAUpdate
+  - TeamBUpdate
+  - PlayerCheck
+  - StartGamePlay
+  - CreateCharacter_Request
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

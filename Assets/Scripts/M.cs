@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.AI;
+using Photon.Realtime;
+using Photon.Pun;
 using UnityEngine;
 
 public enum Team{A,B};
-public class M : MonoBehaviour
+public class M : MonoBehaviourPun
 {
     public event Action OnMove = delegate { };
     public event Action OnStop = delegate { };
@@ -15,6 +17,8 @@ public class M : MonoBehaviour
     public event Action OnDie = delegate { };
     public event Action OnRespawn = delegate { };
 
+    public event Action OnGhostStart = delegate { };
+    public event Action OnGhostEnd = delegate { };
 
 
     bool _canMove = true;
@@ -27,12 +31,15 @@ public class M : MonoBehaviour
 
     [SerializeField]
     NavMeshAgent myNavMesh;
+   
 
     [SerializeField]
     HookSkill hookSkill;
+   
 
     [SerializeField]
     NetSkill netSkill;
+   
 
     [SerializeField]
     ShiftSkill shiftSkill;
@@ -73,28 +80,53 @@ public class M : MonoBehaviour
         NormalStatus();
     }
 
-    internal void Skill4()
-    {
-        refreshSkill.Cast(myGold,this);
-    }
 
-    public void Skill3()
+    // States//
+    void NormalStatus()
     {
-        shiftSkill.CastShift();
-    }
+        _canMove = true;
+        _canSkill1 = true;
+        _canSkill2 = true;
+        _canSkill3 = true;
 
-    void GhostFormEnd()
+    }
+    void NetStatus()
     {
-        GetComponent<MeshRenderer>().enabled = true;
+        myNavMesh.ResetPath();
+        _canMove = false;
+        _canSkill1 = false;
+        _canSkill2 = false;
+        _canSkill3 = false;
+    }
+    void ShiftStatus()
+    {
+        myNavMesh.ResetPath();
+        _canMove = false;
+        _canSkill1 = false;
+        _canSkill2 = false;
+        _canSkill3 = false;
+    }
+    private void BackToNormality()
+    {
         NormalStatus();
     }
 
+    
     void GhostForm()
     {
-        GetComponent<MeshRenderer>().enabled = false;
+        OnGhostStart();
         ShiftStatus();
     }
+    void GhostFormEnd()
+    {
+        OnGhostEnd();
+        NormalStatus();
+    }
 
+    
+
+
+    //Actions//
     public void Move(Vector3 destination)
     {
         if(_canMove)
@@ -110,18 +142,19 @@ public class M : MonoBehaviour
 
         OnStop();
     }
-
+    
     public void Skill1(Vector3 point)
     {
         if (_canSkill1)
         {
+
             hookSkill.CastHook(point);
 
             OnHookShoot();
         }
 
     }
-
+    
     public void Skill2(Vector3 point)
     {
         if (_canSkill2)
@@ -132,7 +165,15 @@ public class M : MonoBehaviour
         }
 
     }
-
+    
+    public void Skill3()
+    {
+        shiftSkill.CastShift();
+    }
+    public void Skill4()
+    {
+        refreshSkill.Cast(myGold, this);
+    }
     public void Hooked(HookHead Hook)
     {
         if(Hook.team!=myTeam)
@@ -145,19 +186,11 @@ public class M : MonoBehaviour
             Catched(Hook);
         }
     }
-
     private void Catched(HookHead hook)
     {
         NetStatus();
         hook.OnHooksEnd += BackToNormality;
     }
-    
-
-    private void BackToNormality()
-    {
-        NormalStatus();
-    }
-
     public void Die()
     {
         OnDie();
@@ -170,22 +203,6 @@ public class M : MonoBehaviour
         Respawn();
     }
     
-    void NetStatus()
-    {
-         myNavMesh.ResetPath();
-         _canMove = false;
-         _canSkill1 = false;
-         _canSkill2 = false;
-         _canSkill3 = false;
-    }
-    void ShiftStatus()
-    {
-        myNavMesh.ResetPath();
-        _canMove = false;
-        _canSkill1 = false;
-        _canSkill2 = false;
-        _canSkill3 = false;
-    }
     public void CatchedByNet(GameObject netStatusPrefab)
     {
         var net= Instantiate(netStatusPrefab).GetComponent<NetStatus>();
@@ -193,15 +210,6 @@ public class M : MonoBehaviour
         net.OnNetReleased += NormalStatus;
         NetStatus();
         
-    }
-
-    void NormalStatus()
-    {
-        _canMove = true;
-        _canSkill1 = true;
-        _canSkill2 = true;
-        _canSkill3 = true;
-
     }
 
     public void Respawn()
@@ -217,5 +225,23 @@ public class M : MonoBehaviour
         }
     }
 
-    
+    public void Skill1Request(Vector3 point)
+    {
+      //rpc?//
+    }
+    public void Skill2Request(Vector3 point)
+    {
+        //rpc?//
+    }
+    public void Skill3Request()
+    {
+
+        //rpc?//
+        //photonView.RPC("Skill3");
+    }
+    public void Skill4Request()
+    {
+        //rpc?// 
+        //photonView.RPC("Skill4");
+    }
 }

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
+using Photon.Pun;
 using UnityEngine;
 
-public class Net : MonoBehaviour
+public class Net : MonoBehaviourPun
 {
     
     public event Action OnObjectCollision;
@@ -70,6 +71,6 @@ public class Net : MonoBehaviour
 
     private void Destroy()
     {
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 }

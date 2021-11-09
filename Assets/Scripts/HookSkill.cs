@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Photon.Pun;
 using UnityEngine;
 
 public class HookSkill : Skill,IReseteable
@@ -17,115 +18,44 @@ public class HookSkill : Skill,IReseteable
 
     Team myTeam;
 
-    float _skillRange;
-    float _skillSpeed;
-
-    bool _hookColition;
-
-
-    Vector3 HookInitialPosition;
-    Vector3 SkillDirection;
-
-
-    LineRenderer myLine;
-    
-
+    List<HookHead> ListOfHooks;
     private void Start()
     {
-
-        //Datatake//
-        _cdTime = data._coolDownTime;
-        _skillRange = data._skillRange;
-        _skillSpeed = data._skillSpeed;
         _cooldown = false;
-        _hookColition = false;
+        ListOfHooks = new List<HookHead>();
 
-        //HookHeadCreation and event suscription//
-        hookHead = Instantiate(data.hookHead).GetComponent<HookHead>();
-        hookHead.Init(myTeam);
-        hookHead.OnObjectCollision += HookColitionHanlder;
-
-        //LineRendererHook creation and config//
-        myLine = gameObject.AddComponent(typeof(LineRenderer)) as LineRenderer; 
-        myLine.SetColors(Color.red, Color.red);
-        myLine.SetWidth(0.2f, 0.2f);
-        myLine.SetPosition(0, Vector3.zero);
-        myLine.SetPosition(1, Vector3.zero);
-        myLine.material = data.myMaterial;
-        myLine.enabled = false;
-               
     }
     
-    void HookColitionHanlder()
-    {
-        _hookColition = true;
-    }
     public void CastHook(Vector3 point)
     {
-        if (!_cooldown)
+        if (!_cooldown && ListOfHooks.Count<1)
         {
-            print("hook");
 
-            point.y = skillSpawnPoint.transform.position.y;
-            SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
-            HookBehaviour();
+            print("me da el CD del hook, lo casteo");
+            var hook = SpawnHook();
+            hook.OnHooksDestroy += HookHandler;
+            var SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
+            hook.Init(skillSpawnPoint, data, SkillDirection);
+
+            ListOfHooks.Add(hook);
+
             CoolDownTimer();
         }
     }
-   
-    async void HookBehaviour()
+    HookHead SpawnHook()
     {
-        myLine.enabled = true;
+        //HookHeadCreation and event suscription//
+        var newHook = PhotonNetwork.Instantiate("Hook", Vector3.zero, Quaternion.identity).GetComponent<HookHead>();
+        //OnHooksEnd+=;
 
-        hookHead.HookHeadActive(skillSpawnPoint.transform.position);
-        HookInitialPosition = skillSpawnPoint.transform.position;
-        var distance = (HookInitialPosition - hookHead.transform.position).magnitude;
-
-        while (!_hookColition && distance<_skillRange)
-        {
-            var distanceToMove = SkillDirection * _skillSpeed * Time.deltaTime;
-            hookHead.Move(distanceToMove);
-            distance = (HookInitialPosition - hookHead.transform.position).magnitude;
-
-            myLine.SetPosition(0,skillSpawnPoint.transform.position);
-            myLine.SetPosition(1, hookHead.transform.position);
-
-            await Task.Yield();
-        }
-
-        //if(_hookColition)
-        //{
-        //    print("Colision el hook asique se termina");
-        //    hookHead.HookHeadOff();
-        //    _hookColition = false;
-        //    myLine.enabled = false;
-
-        //    return;
-        //}
-
-
-        distance = (skillSpawnPoint.transform.position - hookHead.transform.position).magnitude;
-
-        while (distance > 0.5f)
-        {
-            //print("volviendo");
-            var directionToCome = (skillSpawnPoint.transform.position - hookHead.transform.position).normalized;
-            var distanceToMove = directionToCome * _skillSpeed * Time.deltaTime;
-
-            hookHead.Move(distanceToMove);
-            distance = (skillSpawnPoint.transform.position - hookHead.transform.position).magnitude;
-
-            myLine.SetPosition(0, skillSpawnPoint.transform.position);
-            myLine.SetPosition(1, hookHead.transform.position);
-
-            await Task.Yield();
-        }
-
-        hookHead.HookHeadOff();
-        myLine.enabled = false;
-
+        print("Spawneo un hook");
+        return newHook;
     }
-
+   
+   void HookHandler(HookHead hook)
+    {
+        ListOfHooks.Remove(hook);
+    }
     public void ResetCDs()
     {
         _tokenCoolDownTimer = false;
