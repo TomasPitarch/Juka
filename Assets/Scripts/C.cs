@@ -37,6 +37,7 @@ public class C : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.W))
         {
+
             Utility.GetPointUnderCursor(SkillLayer, out Point);
             Model.Skill2(Point);
             //Model.Skill2Request(Point);

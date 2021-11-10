@@ -5,18 +5,18 @@ using Photon.Pun;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class HookHead : MonoBehaviourPun
+public class Hook : MonoBehaviourPun
 {
     public event Action OnObjectCollision = delegate { };
     public event Action OnHooksEnd = delegate { };
-    public event Action<HookHead> OnHooksDestroy = delegate { };
+    public event Action<Hook> OnHooksDestroy = delegate { };
 
-    M CharacterHooked;
-    public Team team;
+    public M CharacterHooked;
+    //public Team team;
 
     /// <summary>
     LineRenderer myLine;
-    bool _hookColition;
+    bool _hookCollided;
 
     Vector3 HookInitialPosition;
     Vector3 SkillDirection;
@@ -26,16 +26,18 @@ public class HookHead : MonoBehaviourPun
 
     float _skillRange;
     float _skillSpeed;
+    int CasterID;
     /// </summary>
 
 
     private void Await()
     {
-        _hookColition = false;
+        _hookCollided = false;
     }
-    public void Init(GameObject SpawnPoint, HookSkill_SO data,Vector3 dir)
+    public void Init(GameObject SpawnPoint, HookSkill_SO data,Vector3 dir,int CasterPv_Id)
     {
-        print("inicializo el hook con la direccion:"+dir);
+
+        CasterID = CasterPv_Id;
 
         _skillRange = data._skillRange;
         _skillSpeed = data._skillSpeed;
@@ -50,16 +52,23 @@ public class HookHead : MonoBehaviourPun
 
         SkillDirection = dir;
         skillSpawnPoint = SpawnPoint;
+
+        print("el caster del hook es:" + ServerManager.Instance.GetPlayer(CasterID));
+
         HookBehaviour();
     }
-
     async void HookBehaviour()
     {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+
         transform.position = skillSpawnPoint.transform.position;
         var HookInitialPosition = skillSpawnPoint.transform.position;
         var distance = (HookInitialPosition - transform.position).magnitude;
 
-        while (!_hookColition && distance < _skillRange)
+        while (!_hookCollided && distance < _skillRange)
         {
             var distanceToMove = SkillDirection * _skillSpeed * Time.deltaTime;
             Move(distanceToMove);
@@ -71,22 +80,12 @@ public class HookHead : MonoBehaviourPun
             await Task.Yield();
         }
 
-        //if(_hookColition)
-        //{
-        //    print("Colision el hook asique se termina");
-        //    hookHead.HookHeadOff();
-        //    _hookColition = false;
-        //    myLine.enabled = false;
-
-        //    return;
-        //}
-
-
         distance = (skillSpawnPoint.transform.position - transform.position).magnitude;
+
+        _hookCollided = true;
 
         while (distance > 0.5f)
         {
-            //print("volviendo");
             var directionToCome = (skillSpawnPoint.transform.position - transform.position).normalized;
             var distanceToMove = directionToCome * _skillSpeed * Time.deltaTime;
 
@@ -100,7 +99,6 @@ public class HookHead : MonoBehaviourPun
         }
 
         HookEnds();
-        
 
     }
     public void HookHeadPosition(Vector3 FromActivePosition)
@@ -114,20 +112,31 @@ public class HookHead : MonoBehaviourPun
         OnHooksDestroy(this);
         PhotonNetwork.Destroy(photonView);
     }
-    public void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-
-        if (collision.gameObject.tag=="Character")
+        if (!PhotonNetwork.IsMasterClient)
         {
-            print("colision de hook con character");
-
-            CharacterHooked = collision.gameObject.GetComponent<M>();
-            CharacterHooked.Hooked(this);
-           
-            
-            OnObjectCollision();
+            return;
         }
+
+        if (other.gameObject.tag == "Character" && !_hookCollided)
+            {
+
+                CharacterHooked = other.gameObject.GetComponent<M>();
+                var charPV_ID = CharacterHooked.photonView.ViewID;
+                var playerHooked = ServerManager.Instance.GetPlayer(charPV_ID);
+                var hookPV_ID = photonView.ViewID;
+
+                int[] IDs = new int[] {hookPV_ID,CasterID};
+                CharacterHooked.photonView.RPC("Hooked", playerHooked, IDs);
+
+                _hookCollided = true;
+
+                OnObjectCollision();
+            }
+        
     }
+    
     public void Move(Vector3 distanceToMove)
     {
         transform.position += distanceToMove;

@@ -60,6 +60,13 @@ MonoBehaviour:
   - PlayerCheck
   - StartGamePlay
   - CreateCharacter_Request
+  - Hooked
+  - CatchedByNet
+  - Skill
+  - SkillingHook
+  - SkillingNet
+  - ShiftBehaviour
+  - RegisterCharacter
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

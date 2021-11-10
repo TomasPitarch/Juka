@@ -5,60 +5,63 @@ using System.Threading.Tasks;
 using Photon.Pun;
 using UnityEngine;
 
-public class HookSkill : Skill,IReseteable
+public class HookSkill : SkillShoot
 {
 
     [SerializeField]
     HookSkill_SO data;
 
-    HookHead hookHead;
+    Hook hookHead;
 
     [SerializeField]
     GameObject skillSpawnPoint;
 
-    Team myTeam;
+    
 
-    List<HookHead> ListOfHooks;
+    List<Hook> ListOfHooks;
     private void Start()
     {
         _cooldown = false;
-        ListOfHooks = new List<HookHead>();
-
+        ListOfHooks = new List<Hook>();
     }
     
-    public void CastHook(Vector3 point)
+    public override void CastSkillShoot(Vector3 point)
     {
-        if (!_cooldown && ListOfHooks.Count<1)
-        {
+        base.CastSkillShoot(point);
+        SkillShoot_SVRequest(point);
+    }
+    void SkillShoot_SVRequest(Vector3 point)
+    {
+        photonView.RPC("SkillingHook", RpcTarget.MasterClient,point);
+    }
 
-            print("me da el CD del hook, lo casteo");
+    [PunRPC]
+    void SkillingHook(Vector3 point)
+    {
+        if (ListOfHooks.Count < 1)
+        {
             var hook = SpawnHook();
             hook.OnHooksDestroy += HookHandler;
+
             var SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
-            hook.Init(skillSpawnPoint, data, SkillDirection);
+            hook.Init(skillSpawnPoint, data, SkillDirection, photonView.ViewID);
 
             ListOfHooks.Add(hook);
 
             CoolDownTimer();
         }
     }
-    HookHead SpawnHook()
+    
+    Hook SpawnHook()
     {
         //HookHeadCreation and event suscription//
-        var newHook = PhotonNetwork.Instantiate("Hook", Vector3.zero, Quaternion.identity).GetComponent<HookHead>();
-        //OnHooksEnd+=;
-
-        print("Spawneo un hook");
+        var newHook = PhotonNetwork.Instantiate("Hook", Vector3.zero, Quaternion.identity).GetComponent<Hook>();
         return newHook;
     }
    
-   void HookHandler(HookHead hook)
+   void HookHandler(Hook hook)
     {
         ListOfHooks.Remove(hook);
     }
-    public void ResetCDs()
-    {
-        _tokenCoolDownTimer = false;
-        _cooldown = false;
-    }
+   
 }
