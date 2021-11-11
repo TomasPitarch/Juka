@@ -20,6 +20,9 @@ public class ClientManager : MonoBehaviourPun
 
     [SerializeField]
     Team myTeam;
+
+    public Team MyTeam { get => myTeam; }
+
     void Start()
     {
         cameraController = GameObject.Find("Main Camera").GetComponent<CameraController>();
@@ -34,7 +37,7 @@ public class ClientManager : MonoBehaviourPun
     {
         M character;
 
-        if(myTeam==Team.A)
+        if(MyTeam==Team.A)
         {
             var randomSpawnpoint = GetRandomSpawnPoint(SpawnPointsT1);
             character = PhotonNetwork.Instantiate("Char A", randomSpawnpoint.position, Quaternion.identity).GetComponent<M>();

@@ -29,7 +29,6 @@ public class Hook : MonoBehaviourPun
     int CasterID;
     /// </summary>
 
-
     private void Await()
     {
         _hookCollided = false;
@@ -136,7 +135,6 @@ public class Hook : MonoBehaviourPun
             }
         
     }
-    
     public void Move(Vector3 distanceToMove)
     {
         transform.position += distanceToMove;

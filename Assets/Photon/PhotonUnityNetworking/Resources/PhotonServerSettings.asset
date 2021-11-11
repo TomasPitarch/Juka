@@ -67,6 +67,10 @@ MonoBehaviour:
   - SkillingNet
   - ShiftBehaviour
   - RegisterCharacter
+  - CharacterDie
+  - UpdateView
+  - CharacterDie_Request
+  - Win
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

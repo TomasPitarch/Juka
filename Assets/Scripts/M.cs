@@ -185,7 +185,6 @@ public class M : MonoBehaviourPun
 
         var Hook_PV = PhotonView.Find(HookID);
 
-        print("busco el pv del hook");
 
         if (Hook_PV == null)
         {
@@ -193,16 +192,14 @@ public class M : MonoBehaviourPun
             return;
         }
 
-        print("1");
+
         var Hook = Hook_PV.gameObject.GetComponent<Hook>();
-        print("2");
 
         if (Hook==null)
         {
             print("No encontre el componente hook");
             return;
         }
-        print("3");
 
         if(Hook.CharacterHooked==null)
         {
@@ -217,7 +214,6 @@ public class M : MonoBehaviourPun
         var CasterChar = PhotonView.Find(hookCasterID);
         var CasterTeam = CasterChar.GetComponent<M>().myTeam;
 
-        print("4");
 
         if (CasterTeam != myTeam)
         {
@@ -240,6 +236,8 @@ public class M : MonoBehaviourPun
     public void Die()
     {
         print("Die");
+
+        ServerManager.Instance.photonView.RPC("CharacterDie_Request",RpcTarget.MasterClient,photonView.ViewID);
         OnDie();
 
         NetStatus();

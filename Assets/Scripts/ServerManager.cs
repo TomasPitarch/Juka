@@ -16,9 +16,16 @@ public sealed class ServerManager:MonoBehaviourPun
         }
     }
 
+    [SerializeField]
+    int maxScore=5;
+
+    int TeamAScore=0;
+    int TeamBScore = 0;
 
     [SerializeField]
     ClientManager clientManager;
+
+    public event Action<int,int> OnScoreChange;
 
     Dictionary<int , Player> PlayerList;
     public List<int> IdList;
@@ -46,6 +53,10 @@ public sealed class ServerManager:MonoBehaviourPun
     [PunRPC]
     void CreateCharacter_Request(Player newPlayer)
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
         clientManager.photonView.RPC("CreatePlayer", newPlayer);
     }
     
@@ -71,4 +82,58 @@ public sealed class ServerManager:MonoBehaviourPun
 
         
     }
+
+    [PunRPC]
+    public void CharacterDie_Request(int CharacterID)
+    {
+        if(!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+        
+        CharacterDie(CharacterID);
+    }
+    void CharacterDie(int CharacterID)
+    {
+        var character = PhotonView.Find(CharacterID);
+        if (character.GetComponent<M>().myTeam == Team.A)
+        {
+            TeamBScore++;
+        }
+        else
+        {
+            TeamAScore++;
+        }
+
+        OnScoreChange(TeamAScore, TeamBScore);
+        WinConditionCheck();
+    }
+
+    void WinConditionCheck()
+    {
+        if(TeamAScore>=maxScore)
+        {
+            
+            photonView.RPC("Win",RpcTarget.All,Team.A);
+        }
+        else if(TeamBScore >= maxScore)
+        {
+            photonView.RPC("Win", RpcTarget.All, Team.B);
+        }
+    }
+
+    [PunRPC]
+    void Win(Team winnerTeam)
+    {
+        if(clientManager.MyTeam==winnerTeam)
+        {
+            print("Win");
+        }
+        else
+        {
+            print("Lose");
+        }
+    }
+    
+
 }
