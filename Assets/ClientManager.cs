@@ -20,11 +20,14 @@ public class ClientManager : MonoBehaviourPun
 
     [SerializeField]
     Team myTeam;
+
+    public Team MyTeam { get => myTeam; }
+
     void Start()
     {
         cameraController = GameObject.Find("Main Camera").GetComponent<CameraController>();
 
-        print(PhotonNetwork.LocalPlayer.NickName);
+
         myTeam = (Team)PhotonNetwork.LocalPlayer.CustomProperties["Team"];
         
     }
@@ -34,7 +37,7 @@ public class ClientManager : MonoBehaviourPun
     {
         M character;
 
-        if(myTeam==Team.A)
+        if(MyTeam==Team.A)
         {
             var randomSpawnpoint = GetRandomSpawnPoint(SpawnPointsT1);
             character = PhotonNetwork.Instantiate("Char A", randomSpawnpoint.position, Quaternion.identity).GetComponent<M>();
@@ -44,10 +47,12 @@ public class ClientManager : MonoBehaviourPun
         {
              var randomSpawnpoint = GetRandomSpawnPoint(SpawnPointsT2);
              character = PhotonNetwork.Instantiate("Char B", randomSpawnpoint.position, Quaternion.identity).GetComponent<M>();
-
         }
+        
         cameraController.SetCharacter(character);
         controller.SetCharacter(character);
+
+        photonView.RPC("RegisterCharacter",RpcTarget.MasterClient,character.photonView.ViewID,PhotonNetwork.LocalPlayer);
     }
     Transform GetRandomSpawnPoint(List<Transform> spawnPoints)
     {
@@ -73,6 +78,7 @@ public class ClientManager : MonoBehaviourPun
 
 
         }
+
 
         return spawnPoints[randomIndex];
     }

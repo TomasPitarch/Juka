@@ -14,10 +14,12 @@ public class V : MonoBehaviourPun
 
         Model.OnGhostEnd += GhostFormEndRPC;
         Model.OnGhostStart += GhostFormStartRPC;
+
+        Model.OnDie += GhostFormStartRPC;
+        Model.OnRespawn += GhostFormEndRPC;
     }
 
-    
-    
+
     [PunRPC]
     void GhostFormStart()
     {

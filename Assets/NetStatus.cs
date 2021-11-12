@@ -1,24 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Photon.Pun;
 using System;
 using UnityEngine;
 
-public class NetStatus : MonoBehaviour
+public class NetStatus : MonoBehaviourPun
 {
     [SerializeField]
     float statusTime;
 
     public event Action OnNetReleased = delegate { };
-    
+
+    private void Start()
+    {
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+        Trapped(statusTime);
+    }
     public void Init(Vector3 position)
     {
         transform.position = position;
-        Trapped(statusTime);
     }
     public void Destroy()
     {
-        Destroy(gameObject);
+        if (!photonView.IsMine)
+        {
+            return;
+        }
+        PhotonNetwork.Destroy(gameObject);
     }
     async void Trapped(float time)
     {

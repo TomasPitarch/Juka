@@ -47,9 +47,12 @@ public class M : MonoBehaviourPun
     [SerializeField]
     RefreshSkill refreshSkill;
 
-    List<IReseteable> ListOfSkills;
+   
 
     GoldComponent myGold;
+
+    [SerializeField]
+    GameObject netStatusPrefab;
     void Start()
     {
         myNavMesh = GetComponent<NavMeshAgent>();
@@ -66,16 +69,6 @@ public class M : MonoBehaviourPun
 
         myGold = GetComponent<GoldComponent>();
 
-       
-
-        ListOfSkills = new List<IReseteable>();
-
-        ListOfSkills.Add(hookSkill);
-        ListOfSkills.Add(netSkill);
-        ListOfSkills.Add(shiftSkill);
-
-
-
 
         NormalStatus();
     }
@@ -89,6 +82,9 @@ public class M : MonoBehaviourPun
         _canSkill2 = true;
         _canSkill3 = true;
 
+
+
+        GetComponent<Rigidbody>().detectCollisions = true;
     }
     void NetStatus()
     {
@@ -105,13 +101,13 @@ public class M : MonoBehaviourPun
         _canSkill1 = false;
         _canSkill2 = false;
         _canSkill3 = false;
+
+        GetComponent<Rigidbody>().detectCollisions = false;
     }
     private void BackToNormality()
     {
         NormalStatus();
     }
-
-    
     void GhostForm()
     {
         OnGhostStart();
@@ -122,9 +118,6 @@ public class M : MonoBehaviourPun
         OnGhostEnd();
         NormalStatus();
     }
-
-    
-
 
     //Actions//
     public void Move(Vector3 destination)
@@ -142,71 +135,131 @@ public class M : MonoBehaviourPun
 
         OnStop();
     }
-    
     public void Skill1(Vector3 point)
     {
         if (_canSkill1)
         {
-
-            hookSkill.CastHook(point);
+            hookSkill.CastSkillShoot(point);
+            TurnToCastDirection(point);
 
             OnHookShoot();
         }
 
     }
-    
     public void Skill2(Vector3 point)
     {
+
         if (_canSkill2)
         {
-            netSkill.CastNet(point);
+            netSkill.CastSkillShoot(point);
+            TurnToCastDirection(point);
+
 
             OnNetShoot();
         }
 
     }
-    
     public void Skill3()
     {
         shiftSkill.CastShift();
     }
     public void Skill4()
     {
-        refreshSkill.Cast(myGold, this);
+        refreshSkill.Cast(myGold);
     }
-    public void Hooked(HookHead Hook)
+    private void TurnToCastDirection(Vector3 point)
     {
-        if(Hook.team!=myTeam)
+        var NormalizedObjectivePosition = new Vector3(point.x,
+                                                      transform.position.y,
+                                                      point.z);
+        transform.LookAt(NormalizedObjectivePosition);
+    }
+
+    [PunRPC]
+    public void Hooked(int[] IDs)
+    {
+        var HookID = IDs[0];
+        var hookCasterID = IDs[1];
+
+        print("Soy el hookeado");
+
+        var Hook_PV = PhotonView.Find(HookID);
+
+
+        if (Hook_PV == null)
         {
+            print("No encontre el componente photonview del hook por el ID");
+            return;
+        }
+
+
+        var Hook = Hook_PV.gameObject.GetComponent<Hook>();
+
+        if (Hook==null)
+        {
+            print("No encontre el componente hook");
+            return;
+        }
+
+        if(Hook.CharacterHooked==null)
+        {
+            print("el hook no tiene a nadie en character hooked");
+        }
+
+        if (photonView.ViewID == hookCasterID)
+        {
+            print("Me autohookie, no hago nada");
+            return;
+        }
+        var CasterChar = PhotonView.Find(hookCasterID);
+        var CasterTeam = CasterChar.GetComponent<M>().myTeam;
+
+
+        if (CasterTeam != myTeam)
+        {
+            print("Me Hookeo un enemigo");
             Die();
             Respawining();
         }
         else
         {
+            print("Me Hookeo un aliado");
             Catched(Hook);
         }
     }
-    private void Catched(HookHead hook)
+    private void Catched(Hook hook)
     {
+        print("Catched");
         NetStatus();
         hook.OnHooksEnd += BackToNormality;
     }
     public void Die()
     {
+        print("Die");
+
+        ServerManager.Instance.photonView.RPC("CharacterDie_Request",RpcTarget.MasterClient,photonView.ViewID);
         OnDie();
-        gameObject.SetActive(false);
-        
+
+        NetStatus();
     }
     async void Respawining()
     {
         await Task.Delay(5000);
         Respawn();
     }
-    
-    public void CatchedByNet(GameObject netStatusPrefab)
+
+    [PunRPC]
+    public void CatchedByNet(int CasterID)
     {
-        var net= Instantiate(netStatusPrefab).GetComponent<NetStatus>();
-        net.Init(transform.position);
+        print("Soy el atrapado");
+
+        if (photonView.ViewID == CasterID)
+        {
+            print("Me pegue la red, no hago nada");
+            return;
+        }
+        ///////////////////////////
+        var net = PhotonNetwork.Instantiate("NetStatus Team 1",transform.position,Quaternion.identity).GetComponent<NetStatus>();
         net.OnNetReleased += NormalStatus;
         NetStatus();
         
@@ -216,32 +269,10 @@ public class M : MonoBehaviourPun
     {
         gameObject.SetActive(true);
         OnRespawn();
-    }
-    public void Rearm()
-    {
-        foreach(var skill in ListOfSkills)
-        {
-            skill.ResetCDs();
-        }
-    }
 
-    public void Skill1Request(Vector3 point)
-    {
-      //rpc?//
+        NormalStatus();
     }
-    public void Skill2Request(Vector3 point)
-    {
-        //rpc?//
-    }
-    public void Skill3Request()
-    {
+   
 
-        //rpc?//
-        //photonView.RPC("Skill3");
-    }
-    public void Skill4Request()
-    {
-        //rpc?// 
-        //photonView.RPC("Skill4");
-    }
+    
 }

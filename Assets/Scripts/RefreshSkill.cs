@@ -7,18 +7,26 @@ public class RefreshSkill : Skill
     [SerializeField]
     int skillCost;
 
-    public void Cast(GoldComponent gold,M character)
+    IReseteable[] ListOfSkills;
+    private void Start()
+    {
+        ListOfSkills = GetComponents<IReseteable>();
+    }
+    public void Cast(GoldComponent gold)
     {
         if(!_cooldown && gold.CanPay(skillCost))
         {
             print("Rearm");
             gold.Pay(skillCost);
-
-            character.Rearm();
+            Rearm();
         }
-
     }
-    
 
-
+    public void Rearm()
+    {
+        foreach (var skill in ListOfSkills)
+        {
+            skill.ResetCDs();
+        }
+    }
 }

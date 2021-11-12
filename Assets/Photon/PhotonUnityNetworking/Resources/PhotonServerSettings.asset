@@ -16,7 +16,7 @@ MonoBehaviour:
     AppIdRealtime: 9db8a6f4-3772-4074-8164-5af693dbee93
     AppIdFusion: 
     AppIdChat: aaf5544e-33f5-45e8-bc52-e9f8d499dfc3
-    AppIdVoice: 2611e26c-5f8b-4e29-9f79-930feecc9c6a
+    AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
     FixedRegion: 
@@ -60,9 +60,17 @@ MonoBehaviour:
   - PlayerCheck
   - StartGamePlay
   - CreateCharacter_Request
-  - CantHearYou
-  - ChangeColour
-  - HeresWhy
+  - Hooked
+  - CatchedByNet
+  - Skill
+  - SkillingHook
+  - SkillingNet
+  - ShiftBehaviour
+  - RegisterCharacter
+  - CharacterDie
+  - UpdateView
+  - CharacterDie_Request
+  - Win
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

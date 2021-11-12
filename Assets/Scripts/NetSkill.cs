@@ -6,7 +6,7 @@ using Photon.Realtime;
 using Photon.Pun;
 using UnityEngine;
 
-public class NetSkill : Skill, IReseteable
+public class NetSkill : SkillShoot
 {
 
     [SerializeField]
@@ -39,20 +39,28 @@ public class NetSkill : Skill, IReseteable
     {
         _netColition = true;
     }
-    public void CastNet(Vector3 point)
+    public override void CastSkillShoot(Vector3 point)
     {
-        if (!_cooldown)
-        {
-            print("Net");
-            SpawnNet();
+        base.CastSkillShoot(point);
+        SkillShoot_SVRequest(point);
 
-            point.y = skillSpawnPoint.transform.position.y;
-            SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
-            net.Init(skillSpawnPoint.transform.position, SkillDirection, _skillSpeed,_lifeTime);
-            CoolDownTimer();
-        }
     }
-    
+    void SkillShoot_SVRequest(Vector3 point)
+    {
+        photonView.RPC("SkillingNet", RpcTarget.MasterClient, point);
+    }
+
+    [PunRPC]
+    void SkillingNet(Vector3 point)
+    {
+        SpawnNet();
+
+        point.y = skillSpawnPoint.transform.position.y;
+        SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
+        net.Init(skillSpawnPoint.transform.position, SkillDirection, _skillSpeed, _lifeTime, photonView.ViewID);
+        CoolDownTimer();
+    }
+
     void SpawnNet()
     {
         //HookHeadCreation and event suscription//
@@ -60,8 +68,5 @@ public class NetSkill : Skill, IReseteable
         net.OnObjectCollision += NetColitionHanlder;
     }
 
-    public void ResetCDs()
-    {
-        _cooldown = false;
-    }
+    
 }

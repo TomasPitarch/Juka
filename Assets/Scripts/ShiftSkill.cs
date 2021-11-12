@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Photon.Pun;
 using System;
 using UnityEngine;
 
@@ -18,11 +19,13 @@ public class ShiftSkill : Skill, IReseteable
         if(!_cooldown)
         {
             print("Shift");
-            ShiftBehaviour();
+            //ShiftBehaviour();
+            photonView.RPC("ShiftBehaviour",RpcTarget.All);
             CoolDownTimer();
         }
     }
    
+    [PunRPC]
     async void ShiftBehaviour()
     {
         OnShiftStart();

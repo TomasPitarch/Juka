@@ -28,7 +28,6 @@ public class QuickLoggin : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedLobby()
     {
-        print("me joinie lobby");
         connectButton.interactable = true;
     }
     public override void OnCreatedRoom()

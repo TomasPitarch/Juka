@@ -21,6 +21,9 @@ public class Net : MonoBehaviourPun
 
     Vector3 skillDirection=Vector3.zero;
 
+    int CasterID;
+    public Team team;
+
     // Update is called once per frame
     void Update()
     {
@@ -28,11 +31,14 @@ public class Net : MonoBehaviourPun
         transform.position += skillDirection * Time.deltaTime * skillSpeed;
     }
 
-    public void Init(Vector3 position, Vector3 direction,float speed,float newLifeTime)
+    public void Init(Vector3 position, Vector3 direction,float speed,float newLifeTime,int CasterID)
     {
         SetDirectionAndSpeed(direction, speed);
         SetPosition(position);
         SetLifeTime(newLifeTime);
+
+        this.CasterID = CasterID;
+
         SkillLifeTime();
     }
 
@@ -47,14 +53,25 @@ public class Net : MonoBehaviourPun
         skillDirection = NormalizedDir;
         skillSpeed = speed;
     }
-    private void OnCollisionEnter(Collision collision)
+   
+    private void OnTriggerEnter(Collider other)
     {
-        print("colision de red con :" + collision.gameObject.name);
-        if (collision.gameObject.tag=="Character")
+        if (!PhotonNetwork.IsMasterClient)
         {
-            collision.gameObject.GetComponent<M>().CatchedByNet(NetStatusPrefab);
+            return;
+        }
+
+        if (other.gameObject.tag == "Character")
+        {
+
+            var CharacterTraped = other.gameObject.GetComponent<M>();
+            var charPV_ID = CharacterTraped.photonView.ViewID;
+            var playerTraped= ServerManager.Instance.GetPlayer(charPV_ID);
+
+            //int[] IDs = new int[] { charPV_ID, CasterID };
+            CharacterTraped.photonView.RPC("CatchedByNet", playerTraped,CasterID);
+
             OnObjectCollision();
-            Destroy();
         }
     }
 
@@ -71,6 +88,11 @@ public class Net : MonoBehaviourPun
 
     private void Destroy()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
         PhotonNetwork.Destroy(gameObject);
     }
 }
