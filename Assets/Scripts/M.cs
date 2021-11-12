@@ -219,6 +219,8 @@ public class M : MonoBehaviourPun
         {
             print("Me Hookeo un enemigo");
             Die();
+            BringGoldForKill_Request(hookCasterID);
+
             Respawining();
         }
         else
@@ -226,6 +228,17 @@ public class M : MonoBehaviourPun
             print("Me Hookeo un aliado");
             Catched(Hook);
         }
+    }
+
+    private void BringGoldForKill_Request(int hookCasterID)
+    {
+        ServerManager.Instance.photonView.RPC("GoldToKiller",RpcTarget.MasterClient,hookCasterID);
+    }
+
+    [PunRPC]
+    void GetGoldForKill()
+    {
+        myGold.AddGold(100);
     }
     private void Catched(Hook hook)
     {
@@ -267,6 +280,7 @@ public class M : MonoBehaviourPun
 
     public void Respawn()
     {
+        transform.position=ServerManager.Instance.ClientManager.GetRandomReSpawnPoint(myTeam).position;
         gameObject.SetActive(true);
         OnRespawn();
 

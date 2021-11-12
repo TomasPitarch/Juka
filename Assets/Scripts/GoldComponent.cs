@@ -26,5 +26,8 @@ public class GoldComponent : MonoBehaviour
         GoldAmount -= skillCost;
     }
 
-    
+    internal void AddGold(int gold)
+    {
+        GoldAmount += gold;
+    }
 }

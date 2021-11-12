@@ -7,6 +7,7 @@ using System;
 
 public sealed class ServerManager:MonoBehaviourPun
 {
+    //Singleton//
     private static ServerManager _instance ;
     public static ServerManager Instance
     {
@@ -15,6 +16,10 @@ public sealed class ServerManager:MonoBehaviourPun
             return _instance;
         }
     }
+    // ----------//
+    
+
+    public event Action<int, int> OnScoreChange;
 
     [SerializeField]
     int maxScore=5;
@@ -25,7 +30,9 @@ public sealed class ServerManager:MonoBehaviourPun
     [SerializeField]
     ClientManager clientManager;
 
-    public event Action<int,int> OnScoreChange;
+    public ClientManager ClientManager { get => clientManager; set => clientManager = value; }
+
+    
 
     Dictionary<int , Player> PlayerList;
     public List<int> IdList;
@@ -44,7 +51,7 @@ public sealed class ServerManager:MonoBehaviourPun
         IdList = new List<int>();
 
         PlayerList = new Dictionary<int,Player>();
-        clientManager = GetComponent<ClientManager>();
+        ClientManager = GetComponent<ClientManager>();
 
         photonView.RPC("CreateCharacter_Request",RpcTarget.MasterClient,PhotonNetwork.LocalPlayer);
 
@@ -57,7 +64,7 @@ public sealed class ServerManager:MonoBehaviourPun
         {
             return;
         }
-        clientManager.photonView.RPC("CreatePlayer", newPlayer);
+        ClientManager.photonView.RPC("CreatePlayer", newPlayer);
     }
     
     [PunRPC]
@@ -125,7 +132,7 @@ public sealed class ServerManager:MonoBehaviourPun
     [PunRPC]
     void Win(Team winnerTeam)
     {
-        if(clientManager.MyTeam==winnerTeam)
+        if(ClientManager.MyTeam==winnerTeam)
         {
             print("Win");
         }
@@ -134,6 +141,14 @@ public sealed class ServerManager:MonoBehaviourPun
             print("Lose");
         }
     }
-    
+
+
+    [PunRPC]
+    void GoldToKiller(int killerID)
+    {
+        var player = PlayerList[killerID];
+
+    }
+
 
 }

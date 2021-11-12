@@ -82,4 +82,40 @@ public class ClientManager : MonoBehaviourPun
 
         return spawnPoints[randomIndex];
     }
+    public Transform GetRandomReSpawnPoint(Team respawnerTeam)
+    {
+        var spawnPoints= SpawnPointsT1;
+
+        if (Team.B==respawnerTeam)
+        {
+            spawnPoints = SpawnPointsT2;
+        }
+        
+            
+
+        bool PossibleSpawn = false;
+        int randomIndex = 0;
+
+        while (!PossibleSpawn)
+        {
+            randomIndex = UnityEngine.Random.Range(0, spawnPoints.Count);
+            var SphereOverlap = Physics.OverlapSphere(spawnPoints[randomIndex].position, 1f);
+
+            PossibleSpawn = true;
+
+            foreach (var Collider in SphereOverlap)
+            {
+                if (Collider.gameObject.GetComponent<M>() != null)
+                {
+                    PossibleSpawn = false;
+                    print("collider contra otro muñeco");
+                }
+            }
+
+
+        }
+
+
+        return spawnPoints[randomIndex];
+    }
 }
