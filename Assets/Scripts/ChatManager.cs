@@ -6,6 +6,7 @@ using Photon.Pun;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Threading.Tasks;
 using TMPro;
 using System;
 
@@ -13,6 +14,9 @@ public class ChatManager : MonoBehaviour,IChatClientListener
 {
     public event Action OnSelect = delegate { };
     public event Action OnDeselect = delegate { };
+
+    [SerializeField]
+     int chatFadeTime=5;
 
     [SerializeField]
     public TextMeshProUGUI content;
@@ -37,6 +41,9 @@ public class ChatManager : MonoBehaviour,IChatClientListener
 
     bool _chatOn = false;
 
+
+    bool fadeToken = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -51,11 +58,11 @@ public class ChatManager : MonoBehaviour,IChatClientListener
         _chats = new string[2];
         _chatDic["World"] = 0;
         _chatDic[PhotonNetwork.CurrentRoom.Name] = 1;
-        print("chat start");
+
         _chatClient = new ChatClient(this);
-        print(_chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat,
+        _chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat,
                             PhotonNetwork.AppVersion,
-                            new AuthenticationValues(PhotonNetwork.LocalPlayer.NickName)));
+                            new AuthenticationValues(PhotonNetwork.LocalPlayer.NickName));
      
         DontShowChat();
     }
@@ -64,7 +71,7 @@ public class ChatManager : MonoBehaviour,IChatClientListener
     {
         _chatOn = false;
 
-        content.GetComponent<CanvasRenderer>().SetAlpha(0.5f);
+        FadeChat();
         scroll.GetComponent<CanvasRenderer>().SetAlpha(0);
         inputField.GetComponent<CanvasRenderer>().SetAlpha(0);
         inputField.interactable=false;
@@ -72,9 +79,40 @@ public class ChatManager : MonoBehaviour,IChatClientListener
         OnDeselect();
     }
 
+    protected async void FadeChat()
+    {
+
+        fadeToken = false;
+        print("arranca el fade del chat");
+
+        var timer = Task.Delay( chatFadeTime * 1000);
+        var alpha = 1f;
+
+        while (!timer.IsCompleted)
+        {
+            print("Tiempo no completo");
+            if (fadeToken)
+            {
+                print("token activado");
+                fadeToken = false; ;
+                return;
+            }
+
+            alpha -= Time.deltaTime * 100 / (chatFadeTime*100);
+            print("alpha es:"+alpha);
+            content.GetComponent<CanvasRenderer>().SetAlpha(alpha);
+            await Task.Yield();
+        }
+
+        print("tiempo completo");
+       
+    }
+
     void ShowChat()
     {
         _chatOn = true;
+
+        fadeToken = true;
 
         content.GetComponent<CanvasRenderer>().SetAlpha(1);
         scroll.GetComponent<CanvasRenderer>().SetAlpha(1);
@@ -160,17 +198,17 @@ public class ChatManager : MonoBehaviour,IChatClientListener
     }
     public void DebugReturn(DebugLevel level, string message)
     {
-        print("Level:"+level+".Debug Return:" + message);
+        //print("Level:"+level+".Debug Return:" + message);
     }
 
     public void OnChatStateChange(ChatState state)
     {
-        print(state.ToString());
+        //print(state.ToString());
     }
     
     public void OnConnected()
     {
-        print("Chat conectado");
+        //print("Chat conectado");
         _chatClient.Subscribe(_channels);
     }
 

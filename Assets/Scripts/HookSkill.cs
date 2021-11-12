@@ -27,7 +27,10 @@ public class HookSkill : SkillShoot
     
     public override void CastSkillShoot(Vector3 point)
     {
-        base.CastSkillShoot(point);
+        if (_cooldown)
+        {
+            return;
+        }
         SkillShoot_SVRequest(point);
     }
     void SkillShoot_SVRequest(Vector3 point)

@@ -41,7 +41,13 @@ public class NetSkill : SkillShoot
     }
     public override void CastSkillShoot(Vector3 point)
     {
-        base.CastSkillShoot(point);
+        if (_cooldown)
+        {
+            print("skill en cd");
+            return;
+        }
+        print("skilleo");
+
         SkillShoot_SVRequest(point);
 
     }

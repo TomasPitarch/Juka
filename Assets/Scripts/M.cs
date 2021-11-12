@@ -267,11 +267,11 @@ public class M : MonoBehaviourPun
     [PunRPC]
     public void CatchedByNet(int CasterID)
     {
-        print("Soy el atrapado");
+        //print("Soy el atrapado");
 
         if (photonView.ViewID == CasterID)
         {
-            print("Me pegue la red, no hago nada");
+            //print("Me pegue la red, no hago nada");
             return;
         }
         ///////////////////////////

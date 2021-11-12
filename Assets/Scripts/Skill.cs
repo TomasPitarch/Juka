@@ -11,21 +11,10 @@ public class Skill : MonoBehaviourPun
     protected float _cdTime;
     protected bool _tokenCoolDownTimer = false;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     protected async void CoolDownTimer()
     {
-
+        print("arranca el timer del skill");
         _cooldown = true;
 
 
@@ -33,9 +22,10 @@ public class Skill : MonoBehaviourPun
 
         while (!timer.IsCompleted)
         {
-
-            if (!_tokenCoolDownTimer)
+            print("Tiempo no completo");
+            if (_tokenCoolDownTimer)
             {
+                print("token activado");
                 _tokenCoolDownTimer = true;
                 return;
             }
@@ -43,6 +33,7 @@ public class Skill : MonoBehaviourPun
             await Task.Yield();
         }
 
+        print("tiempo completo");
         _cooldown = false;
     }
 }

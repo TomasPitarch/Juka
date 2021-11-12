@@ -16,13 +16,15 @@ public class ShiftSkill : Skill, IReseteable
 
     public void CastShift()
     {
-        if(!_cooldown)
+        if(_cooldown)
         {
-            print("Shift");
-            //ShiftBehaviour();
-            photonView.RPC("ShiftBehaviour",RpcTarget.All);
-            CoolDownTimer();
+            print("skill en cd");
+            return;
         }
+
+        print("Shift");
+        photonView.RPC("ShiftBehaviour", RpcTarget.All);
+        CoolDownTimer();
     }
    
     [PunRPC]
