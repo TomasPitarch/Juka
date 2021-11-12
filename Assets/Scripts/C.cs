@@ -2,8 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Voice.Unity;
+using Photon.Voice.PUN;
 
-public class C : MonoBehaviour
+public class C : MonoBehaviourPun
 {
     [SerializeField]
     LayerMask GroundLayer;
@@ -16,8 +19,29 @@ public class C : MonoBehaviour
 
     Vector3 Point;
 
+    bool _isLocked;
+    Recorder _recorder;
+
+
+    private void Start()
+    {
+        if (photonView.IsMine)
+        {
+            var chatManager = FindObjectOfType<ChatManager>();
+            if (chatManager)
+            {
+                chatManager.OnSelect += () => _isLocked = true;
+                chatManager.OnDeselect += () => _isLocked = false; //Lambda
+            }
+
+            _recorder = PhotonVoiceNetwork.Instance.PrimaryRecorder;
+        }
+
+    }
+
     void Update()
     {
+        if (_isLocked) return;
         if (Input.GetMouseButtonUp(1))
         {
             if (Utility.GetPointUnderCursor(GroundLayer, out Point))
@@ -53,6 +77,18 @@ public class C : MonoBehaviour
             //Model.Skill4Request();
         }
 
+        if (_recorder != null)
+        {
+            if (Input.GetKey(KeyCode.V))
+            {
+                _recorder.TransmitEnabled = true;
+            }
+            else
+            {
+                _recorder.TransmitEnabled = false;
+            }
+        }
+
     }
 
     internal void SetCharacter(M character)
@@ -60,5 +96,4 @@ public class C : MonoBehaviour
         Model = character;
     }
 
-    
 }
