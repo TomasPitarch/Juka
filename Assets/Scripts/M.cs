@@ -219,6 +219,7 @@ public class M : MonoBehaviourPun
         {
             print("Me Hookeo un enemigo");
             Die();
+            print("Mori, entonces aviso que tengo que dar oro");
             BringGoldForKill_Request(hookCasterID);
 
             Respawining();
@@ -232,13 +233,15 @@ public class M : MonoBehaviourPun
 
     private void BringGoldForKill_Request(int hookCasterID)
     {
+        print("hago la request de dar oro al servidor");
         ServerManager.Instance.photonView.RPC("GoldToKiller",RpcTarget.MasterClient,hookCasterID);
     }
 
     [PunRPC]
-    void GetGoldForKill()
+    void GetGoldForKill(int goldReward)
     {
-        myGold.AddGold(100);
+        print("aca recibiendo oro:" + goldReward);
+        myGold.AddGold(goldReward);
     }
     private void Catched(Hook hook)
     {

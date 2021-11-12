@@ -11,37 +11,100 @@ using System;
 
 public class ChatManager : MonoBehaviour,IChatClientListener
 {
-    public Action OnSelect = delegate { };
-    public Action OnDeselect = delegate { };
+    public event Action OnSelect = delegate { };
+    public event Action OnDeselect = delegate { };
+
+    [SerializeField]
     public TextMeshProUGUI content;
+
+    [SerializeField]
     public TMP_InputField inputField;
+
+    [SerializeField]
     public ScrollRect scroll;
-    int _currentChat;
+
+    [SerializeField]
     public int maxLines = 10;
+
+    ChatClient _chatClient;
+
+    int _currentChat;
     Dictionary<string, int> _chatDic = new Dictionary<string, int>();
     float _limitScrollAutomation = 0.2f;
-    ChatClient _chatClient;
+    
     string[] _channels;
     string[] _chats;
+
+    bool _chatOn = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        if(!PhotonNetwork.IsConnected)  return;
+        //Photon chat no inicializa si no esta conectado a photonNetwork, y sale de la funcion//
+        if (!PhotonNetwork.IsConnected)
+        {
+            return;
+        }
+
+
         _channels = new string[] { "World", PhotonNetwork.CurrentRoom.Name };
         _chats = new string[2];
         _chatDic["World"] = 0;
         _chatDic[PhotonNetwork.CurrentRoom.Name] = 1;
         print("chat start");
         _chatClient = new ChatClient(this);
-        _chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat,
+        print(_chatClient.Connect(PhotonNetwork.PhotonServerSettings.AppSettings.AppIdChat,
                             PhotonNetwork.AppVersion,
-                            new AuthenticationValues(PhotonNetwork.LocalPlayer.NickName));
+                            new AuthenticationValues(PhotonNetwork.LocalPlayer.NickName)));
+     
+        DontShowChat();
+    }
+
+    void DontShowChat()
+    {
+        _chatOn = false;
+
+        content.GetComponent<CanvasRenderer>().SetAlpha(0.5f);
+        scroll.GetComponent<CanvasRenderer>().SetAlpha(0);
+        inputField.GetComponent<CanvasRenderer>().SetAlpha(0);
+        inputField.interactable=false;
+
+        OnDeselect();
+    }
+
+    void ShowChat()
+    {
+        _chatOn = true;
+
+        content.GetComponent<CanvasRenderer>().SetAlpha(1);
+        scroll.GetComponent<CanvasRenderer>().SetAlpha(1);
+        inputField.GetComponent<CanvasRenderer>().SetAlpha(1);
+        inputField.interactable = true;
+
+        EventSystem.current.SetSelectedGameObject(inputField.gameObject);
+
+        OnSelect();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            print("chatmanager/Aprentamos Enter");
+            if (_chatOn)
+            {
+                SendChat();
+                DontShowChat();
+            }
+            else
+            {
+                ShowChat();
+            }
+        }
+
+        
+
         _chatClient.Service(); // Actualiza constantemente el chat
     }
 
@@ -76,7 +139,10 @@ public class ChatManager : MonoBehaviour,IChatClientListener
     }
     public void SendChat()
     {
+        print("chatmanager/sendchat");
+
         if (string.IsNullOrEmpty(inputField.text) || string.IsNullOrWhiteSpace(inputField.text)) return;
+
         string[] words = inputField.text.Split(' ');
         if(words[0] == "/w" && words.Length > 2)
         {
@@ -89,19 +155,19 @@ public class ChatManager : MonoBehaviour,IChatClientListener
                 
        
         inputField.text = "";
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(inputField.gameObject);
+        //EventSystem.current.SetSelectedGameObject(null);
+        //EventSystem.current.SetSelectedGameObject(inputField.gameObject);
     }
     public void DebugReturn(DebugLevel level, string message)
     {
-        throw new System.NotImplementedException();
+        print("Level:"+level+".Debug Return:" + message);
     }
 
     public void OnChatStateChange(ChatState state)
     {
-        throw new System.NotImplementedException();
+        print(state.ToString());
     }
-
+    
     public void OnConnected()
     {
         print("Chat conectado");
@@ -111,7 +177,6 @@ public class ChatManager : MonoBehaviour,IChatClientListener
     public void OnDisconnected()
     {
         print("Chat desconectado");
-        throw new System.NotImplementedException();
     }
 
     public void OnGetMessages(string channelName, string[] senders, object[] messages)

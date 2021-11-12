@@ -194,21 +194,15 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
                 var table = new Hashtable();
                 table.Add("Team", Team.A);
 
-                //player.SetCustomProperties(table);
-                print(player.SetCustomProperties(table));
-                print((Team)player.CustomProperties["Team"]);
-        }
+                player.SetCustomProperties(table);
+            }
 
             //Set Team B for all TeamB  Players//
             foreach (var player in TeamB)
             {
                 var table = new Hashtable();
                 table.Add("Team", Team.B);
-                //player.SetCustomProperties(table);
-
-                print(player.SetCustomProperties(table));
-                print((Team)player.CustomProperties["Team"]);
-
+                player.SetCustomProperties(table);
         }
        
         photonView.RPC("StartGamePlay",RpcTarget.All);

@@ -34,14 +34,15 @@ public class C : MonoBehaviourPun
                 chatManager.OnDeselect += () => _isLocked = false; //Lambda
             }
 
-            _recorder = PhotonVoiceNetwork.Instance.PrimaryRecorder;
+            //_recorder = PhotonVoiceNetwork.Instance.PrimaryRecorder;
         }
 
     }
 
     void Update()
     {
-        if (_isLocked) return;
+       
+        //Input de movimiento//
         if (Input.GetMouseButtonUp(1))
         {
             if (Utility.GetPointUnderCursor(GroundLayer, out Point))
@@ -51,6 +52,14 @@ public class C : MonoBehaviourPun
             }
         }
 
+        //Si el chat esta activado no podemos hacer ninguna Accion mas que movernos,
+        //o volver a desactivar el chat//
+        if (_isLocked)
+        {
+            return;
+        }
+
+        //Input de skills//
         if (Input.GetKeyUp(KeyCode.Q))
         {
             Utility.GetPointUnderCursor(SkillLayer, out Point);
@@ -77,6 +86,7 @@ public class C : MonoBehaviourPun
             //Model.Skill4Request();
         }
 
+        //Input de Voice//
         if (_recorder != null)
         {
             if (Input.GetKey(KeyCode.V))

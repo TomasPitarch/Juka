@@ -42,12 +42,11 @@ public class TeamPick_View : MonoBehaviourPun
 
                 if (player == PhotonNetwork.LocalPlayer)
                 {
-                    print("iguales");
+
                     text = text + "<color=green>" + player.NickName + "  </color>" + "\n";
                 }
                 else
                 {
-                    print("diferentes");
                     text = text + "<color=black>" + player.NickName + "  </color>" + "\n";
                 }
             }

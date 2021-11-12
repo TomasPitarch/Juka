@@ -22,6 +22,9 @@ public sealed class ServerManager:MonoBehaviourPun
     public event Action<int, int> OnScoreChange;
 
     [SerializeField]
+    int goldReward=100;
+
+    [SerializeField]
     int maxScore=5;
 
     int TeamAScore=0;
@@ -146,8 +149,10 @@ public sealed class ServerManager:MonoBehaviourPun
     [PunRPC]
     void GoldToKiller(int killerID)
     {
+        print("server manda rpc de goldtokiller");
         var player = PlayerList[killerID];
-
+        var character = PhotonView.Find(killerID);
+        character.GetComponent<M>().photonView.RPC("GetGoldForKill", player, goldReward);
     }
 
 
