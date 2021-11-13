@@ -14,8 +14,9 @@ public class Hook : MonoBehaviourPun
     public M CharacterHooked;
     //public Team team;
 
-    /// <summary>
-    LineRenderer myLine;
+   
+    //LineRenderer myLine;
+
     bool _hookCollided;
 
     Vector3 HookInitialPosition;
@@ -42,12 +43,14 @@ public class Hook : MonoBehaviourPun
         _skillSpeed = data._skillSpeed;
 
         //LineRendererHook creation and config//
-        myLine = gameObject.AddComponent(typeof(LineRenderer)) as LineRenderer;
-        myLine.SetColors(Color.red, Color.red);
-        myLine.SetWidth(0.2f, 0.2f);
-        myLine.SetPosition(0, Vector3.zero);
-        myLine.SetPosition(1, Vector3.zero);
-        myLine.material = data.myMaterial;
+        //myLine = gameObject.AddComponent(typeof(LineRenderer)) as LineRenderer;
+        //myLine.SetColors(Color.red, Color.red);
+        //myLine.SetWidth(0.2f, 0.2f);
+        //myLine.SetPosition(0, Vector3.zero);
+        //myLine.SetPosition(1, Vector3.zero);
+        //myLine.material = data.myMaterial;
+
+      
 
         SkillDirection = dir;
         skillSpawnPoint = SpawnPoint;
@@ -73,8 +76,8 @@ public class Hook : MonoBehaviourPun
             Move(distanceToMove);
             distance = (HookInitialPosition - transform.position).magnitude;
 
-            myLine.SetPosition(0, skillSpawnPoint.transform.position);
-            myLine.SetPosition(1, transform.position);
+            //myLine.SetPosition(0, skillSpawnPoint.transform.position);
+            //myLine.SetPosition(1, transform.position);
 
             await Task.Yield();
         }
@@ -91,8 +94,8 @@ public class Hook : MonoBehaviourPun
             Move(distanceToMove);
             distance = (skillSpawnPoint.transform.position - transform.position).magnitude;
 
-            myLine.SetPosition(0, skillSpawnPoint.transform.position);
-            myLine.SetPosition(1, transform.position);
+            //myLine.SetPosition(0, skillSpawnPoint.transform.position);
+            //myLine.SetPosition(1, transform.position);
 
             await Task.Yield();
         }
@@ -131,7 +134,7 @@ public class Hook : MonoBehaviourPun
 
                 _hookCollided = true;
 
-                OnObjectCollision();
+                //OnObjectCollision();
             }
         
     }

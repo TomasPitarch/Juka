@@ -96,6 +96,7 @@ public class TeamPick_View : MonoBehaviourPun
     void TeamWaitUpdate(string newList)
     {
         WaitTeam.text = newList;
+        WaitTeam.text = "<color=green>" + "lo que quieras" + "</color>";
     }
     [PunRPC]
     void TeamAUpdate(string newList)

@@ -83,14 +83,14 @@ public class ChatManager : MonoBehaviour,IChatClientListener
     {
 
         fadeToken = false;
-        print("arranca el fade del chat");
+        //print("arranca el fade del chat");
 
         var timer = Task.Delay( chatFadeTime * 1000);
         var alpha = 1f;
 
         while (!timer.IsCompleted)
         {
-            print("Tiempo no completo");
+            //print("Tiempo no completo");
             if (fadeToken)
             {
                 print("token activado");
@@ -99,12 +99,12 @@ public class ChatManager : MonoBehaviour,IChatClientListener
             }
 
             alpha -= Time.deltaTime * 100 / (chatFadeTime*100);
-            print("alpha es:"+alpha);
+            //print("alpha es:"+alpha);
             content.GetComponent<CanvasRenderer>().SetAlpha(alpha);
             await Task.Yield();
         }
 
-        print("tiempo completo");
+        //print("tiempo completo");
        
     }
 
@@ -122,6 +122,15 @@ public class ChatManager : MonoBehaviour,IChatClientListener
         EventSystem.current.SetSelectedGameObject(inputField.gameObject);
 
         OnSelect();
+    }
+    void ShowChatOnRecieveMessage()
+    {
+        fadeToken = true;
+
+        content.GetComponent<CanvasRenderer>().SetAlpha(1);
+        
+
+        FadeChat();
     }
 
     // Update is called once per frame
@@ -233,6 +242,8 @@ public class ChatManager : MonoBehaviour,IChatClientListener
             int indexChat = _chatDic[channelName];
             _chats[indexChat] += color + senders[i] + ": " + "</color>"+ messages[i] + "\n";
         }
+
+        ShowChatOnRecieveMessage();
         UpdateChatUI();
     }
 

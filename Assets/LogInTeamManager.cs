@@ -6,6 +6,7 @@ using UnityEngine;
 using System;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using ExitGames.Client.Photon;
 
 public class LogInTeamManager : MonoBehaviourPunCallbacks
 {
@@ -13,7 +14,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
     public event Action OnTeamBUpdate= delegate { };
     public event Action OnTeamWaitUpdate= delegate { };
 
-
+    int auxiliar = 0;
 
     public List<Player> TeamA;
     public List<Player> TeamB;
@@ -195,6 +196,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
                 table.Add("Team", Team.A);
 
                 player.SetCustomProperties(table);
+
             }
 
             //Set Team B for all TeamB  Players//
@@ -203,15 +205,39 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
                 var table = new Hashtable();
                 table.Add("Team", Team.B);
                 player.SetCustomProperties(table);
-        }
-       
-        photonView.RPC("StartGamePlay",RpcTarget.All);
+                 
+            }
+        
     }
 
     [PunRPC]
     void StartGamePlay()
     {
         PhotonNetwork.LoadLevel("TestScene");
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+    {
+        if(!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
+        base.OnPlayerPropertiesUpdate(targetPlayer, changedProps);
+
+        if (!changedProps.ContainsKey("Team"))
+        {
+            print("no contiene key");
+            return;
+        }
+            
+        print("el player:" + targetPlayer.NickName + "se actualizo");
+        auxiliar++;
+        if(auxiliar>=TeamA.Count+TeamB.Count && auxiliar!=0)
+        {
+            photonView.RPC("StartGamePlay", RpcTarget.All);
+        }
+       
     }
 
 }

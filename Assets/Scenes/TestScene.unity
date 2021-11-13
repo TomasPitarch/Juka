@@ -1084,6 +1084,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97c77026bf5bb5341b63a666c254fc5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  chatFadeTime: 5
   content: {fileID: 6576711408658238341}
   inputField: {fileID: 6576711408330269123}
   scroll: {fileID: 6576711408036359928}
