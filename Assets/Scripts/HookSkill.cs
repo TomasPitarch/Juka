@@ -22,6 +22,7 @@ public class HookSkill : SkillShoot
     private void Start()
     {
         _cooldown = false;
+        _cdTime = data._coolDownTime;
         ListOfHooks = new List<Hook>();
     }
     

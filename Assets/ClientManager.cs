@@ -19,6 +19,9 @@ public class ClientManager : MonoBehaviourPun
     C controller;
 
     [SerializeField]
+    UI_View UI;
+
+    [SerializeField]
     Team myTeam;
 
     public Team MyTeam { get => myTeam; }
@@ -51,6 +54,9 @@ public class ClientManager : MonoBehaviourPun
         
         cameraController.SetCharacter(character);
         controller.SetCharacter(character);
+
+
+        UI.SetHandlers(character);
 
         photonView.RPC("RegisterCharacter",RpcTarget.MasterClient,character.photonView.ViewID,PhotonNetwork.LocalPlayer);
     }
