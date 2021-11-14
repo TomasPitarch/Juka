@@ -187,7 +187,6 @@ MonoBehaviour:
   goldReward: 100
   maxScore: 5
   clientManager: {fileID: 0}
-  IdList: 
 --- !u!4 &156671545
 Transform:
   m_ObjectHideFlags: 0
@@ -1065,6 +1064,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1726435391}
   - component: {fileID: 1726435390}
+  - component: {fileID: 1726435392}
   m_Layer: 0
   m_Name: Chat Manager
   m_TagString: Untagged
@@ -1103,6 +1103,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1726435392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1726435389}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 4
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &1742465593
 GameObject:
   m_ObjectHideFlags: 0
@@ -1140,7 +1162,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Team A:0 || 0:TeamB
+  m_text: '<color=red>Team A:0 |<color=blue>| 0:TeamB
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1209,9 +1233,9 @@ MonoBehaviour:
   m_margin: {x: -861.0717, y: -22.01477, z: -855.63916, w: -19.075562}
   m_textInfo:
     textComponent: {fileID: 1742465594}
-    characterCount: 19
+    characterCount: 20
     spriteCount: 0
-    spaceCount: 3
+    spaceCount: 4
     wordCount: 5
     linkCount: 0
     lineCount: 1

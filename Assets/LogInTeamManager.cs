@@ -227,11 +227,10 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
 
         if (!changedProps.ContainsKey("Team"))
         {
-            print("no contiene key");
             return;
         }
             
-        print("el player:" + targetPlayer.NickName + "se actualizo");
+
         auxiliar++;
         if(auxiliar>=TeamA.Count+TeamB.Count && auxiliar!=0)
         {

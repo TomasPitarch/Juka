@@ -25,8 +25,7 @@ public class C : MonoBehaviourPun
 
     private void Start()
     {
-        if (photonView.IsMine)
-        {
+      
             var chatManager = FindObjectOfType<ChatManager>();
             if (chatManager)
             {
@@ -34,8 +33,7 @@ public class C : MonoBehaviourPun
                 chatManager.OnDeselect += () => _isLocked = false; //Lambda
             }
 
-            //_recorder = PhotonVoiceNetwork.Instance.PrimaryRecorder;
-        }
+        //_recorder = PhotonVoiceNetwork.Instance.PrimaryRecorder;
 
     }
 
@@ -54,6 +52,8 @@ public class C : MonoBehaviourPun
 
         //Si el chat esta activado no podemos hacer ninguna Accion mas que movernos,
         //o volver a desactivar el chat//
+        print("controler lockeado:" + _isLocked);
+
         if (_isLocked)
         {
             return;

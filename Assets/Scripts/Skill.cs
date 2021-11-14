@@ -14,7 +14,7 @@ public class Skill : MonoBehaviourPun
 
     protected async void CoolDownTimer()
     {
-        print("arranca el timer del skill");
+        print("arranca el cd");
         _cooldown = true;
 
 
@@ -22,7 +22,7 @@ public class Skill : MonoBehaviourPun
 
         while (!timer.IsCompleted)
         {
-            print("Tiempo no completo");
+
             if (_tokenCoolDownTimer)
             {
                 print("token activado");
@@ -33,7 +33,7 @@ public class Skill : MonoBehaviourPun
             await Task.Yield();
         }
 
-        print("tiempo completo");
+
         _cooldown = false;
     }
 }

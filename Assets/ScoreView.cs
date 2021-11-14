@@ -24,7 +24,8 @@ public class ScoreView : MonoBehaviourPun
     [PunRPC]
     void UpdateView(int TeamA,int TeamB)
     {
-        scoreText.text= "Team A:"+TeamA+" || "+TeamB+":Team B";
+        scoreText.text= "<color=red>Team A:" + TeamA+ " |<color=blue>| " + TeamB+":Team B";
     }
-        
+    
+
 }

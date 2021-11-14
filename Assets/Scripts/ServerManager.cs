@@ -20,6 +20,7 @@ public sealed class ServerManager:MonoBehaviourPun
     
 
     public event Action<int, int> OnScoreChange;
+    public event Action OnRegisterPlayer= delegate { };
 
     [SerializeField]
     int goldReward=100;
@@ -34,11 +35,9 @@ public sealed class ServerManager:MonoBehaviourPun
     ClientManager clientManager;
 
     public ClientManager ClientManager { get => clientManager; set => clientManager = value; }
+    public Dictionary<int, Player> PlayerList { get => playerList; set => playerList = value; }
 
-    
-
-    Dictionary<int , Player> PlayerList;
-    public List<int> IdList;
+    Dictionary<int , Player> playerList;
 
     void Start()
     {
@@ -51,7 +50,6 @@ public sealed class ServerManager:MonoBehaviourPun
         _instance = this;
 
         //-----------------------//
-        IdList = new List<int>();
 
         PlayerList = new Dictionary<int,Player>();
         ClientManager = GetComponent<ClientManager>();
@@ -74,7 +72,7 @@ public sealed class ServerManager:MonoBehaviourPun
     void RegisterCharacter(int ID,Player player)
     {
         PlayerList.Add(ID, player);
-        IdList.Add(ID);
+        OnRegisterPlayer();
     }
 
     public Player GetPlayer(int charPV_ID)
@@ -149,7 +147,6 @@ public sealed class ServerManager:MonoBehaviourPun
     [PunRPC]
     void GoldToKiller(int killerID)
     {
-        print("server manda rpc de goldtokiller");
         var player = PlayerList[killerID];
         var character = PhotonView.Find(killerID);
         character.GetComponent<M>().photonView.RPC("GetGoldForKill", player, goldReward);

@@ -77,6 +77,8 @@ MonoBehaviour:
   - CantHearYou
   - ChangeColour
   - HeresWhy
+  - UpdateNickNames
+  - UpdatePlayerList_Request
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

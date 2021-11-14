@@ -9,8 +9,9 @@ using UnityEngine.EventSystems;
 using System.Threading.Tasks;
 using TMPro;
 using System;
+using Hashtable = System.Collections.Hashtable;
 
-public class ChatManager : MonoBehaviour,IChatClientListener
+public class ChatManager : MonoBehaviourPun,IChatClientListener
 {
     public event Action OnSelect = delegate { };
     public event Action OnDeselect = delegate { };
@@ -44,6 +45,10 @@ public class ChatManager : MonoBehaviour,IChatClientListener
 
     bool fadeToken = false;
 
+    List<string> TeamANicks;
+
+    List<string> TeamBNicks;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -65,7 +70,73 @@ public class ChatManager : MonoBehaviour,IChatClientListener
                             new AuthenticationValues(PhotonNetwork.LocalPlayer.NickName));
      
         DontShowChat();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+           ServerManager.Instance.OnRegisterPlayer+=UpdatePlayerList_OnMasterClient;
+        }
     }
+
+   
+   public void UpdatePlayerList_OnMasterClient()
+    {
+
+        var keys =  ServerManager.Instance.PlayerList.Keys;
+       
+
+        string teamA="";
+        string teamB="";
+
+        foreach(var key in keys)
+        {
+            var player = ServerManager.Instance.PlayerList[key];
+
+            if((Team)player.CustomProperties["Team"]==Team.A)
+            {
+                teamA += player.NickName+"/";
+
+            }
+            else
+            {
+                teamB += player.NickName + "/";
+            }
+        }
+
+        photonView.RPC("UpdateNickNames",RpcTarget.All,teamA,teamB);
+    }
+
+    [PunRPC]
+    void UpdateNickNames(string teamA,string teamB)
+    {
+
+         TeamANicks=new List<string>();
+
+        TeamBNicks= new List<string>();
+
+        var teamASplited = teamA.Split('/');
+
+        var teamBSplited = teamB.Split('/');
+
+        foreach(var nickname in teamASplited)
+        {
+            if(nickname!="")
+            {
+                TeamANicks.Add(nickname);
+            }
+            
+        }
+
+        foreach (var nickname in teamBSplited)
+        {
+            if (nickname != "")
+            {
+                TeamBNicks.Add(nickname);
+            }
+            
+        }
+       
+    }
+
 
     void DontShowChat()
     {
@@ -93,7 +164,7 @@ public class ChatManager : MonoBehaviour,IChatClientListener
             //print("Tiempo no completo");
             if (fadeToken)
             {
-                print("token activado");
+
                 fadeToken = false; ;
                 return;
             }
@@ -136,9 +207,11 @@ public class ChatManager : MonoBehaviour,IChatClientListener
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return)|| Input.GetKeyDown(KeyCode.Return))
         {
-            print("chatmanager/Aprentamos Enter");
+            print("apretamos para abrir el chat");
+            print("el chat esta "+_chatOn);
+
             if (_chatOn)
             {
                 SendChat();
@@ -186,7 +259,6 @@ public class ChatManager : MonoBehaviour,IChatClientListener
     }
     public void SendChat()
     {
-        print("chatmanager/sendchat");
 
         if (string.IsNullOrEmpty(inputField.text) || string.IsNullOrWhiteSpace(inputField.text)) return;
 
@@ -228,16 +300,20 @@ public class ChatManager : MonoBehaviour,IChatClientListener
 
     public void OnGetMessages(string channelName, string[] senders, object[] messages)
     {
-        string color;
+        string color= "<color=black>";
         for (int i = 0; i < senders.Length; i++)
         {
-            if(senders[i] == PhotonNetwork.NickName)
+            if(TeamANicks.Contains(senders[i]))
             {
                 color = "<color=red>";
             }
-            else
+            else if(TeamBNicks.Contains(senders[i]))
             {
                 color = "<color=blue>";
+            }
+            else
+            {
+                print("el sender:" + senders[i] + " no estaba en ningun equipo");
             }
             int indexChat = _chatDic[channelName];
             _chats[indexChat] += color + senders[i] + ": " + "</color>"+ messages[i] + "\n";

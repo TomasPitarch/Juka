@@ -32,6 +32,7 @@ public class HookSkill : SkillShoot
             return;
         }
         SkillShoot_SVRequest(point);
+        CoolDownTimer();
     }
     void SkillShoot_SVRequest(Vector3 point)
     {
@@ -51,7 +52,7 @@ public class HookSkill : SkillShoot
 
             ListOfHooks.Add(hook);
 
-            CoolDownTimer();
+           
         }
     }
     

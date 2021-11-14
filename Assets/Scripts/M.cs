@@ -47,8 +47,6 @@ public class M : MonoBehaviourPun
     [SerializeField]
     RefreshSkill refreshSkill;
 
-   
-
     GoldComponent myGold;
 
     [SerializeField]
@@ -132,7 +130,8 @@ public class M : MonoBehaviourPun
     public void StopMove()
     {
         myNavMesh.isStopped=true;
-
+        //myNavMesh.ResetPath();
+        //myNavMesh.enabled = false;
         OnStop();
     }
     public void Skill1(Vector3 point)
@@ -178,10 +177,12 @@ public class M : MonoBehaviourPun
     [PunRPC]
     public void Hooked(int[] IDs)
     {
+        StopMove();
+
         var HookID = IDs[0];
         var hookCasterID = IDs[1];
 
-        print("Soy el hookeado");
+
 
         var Hook_PV = PhotonView.Find(HookID);
 
@@ -211,15 +212,18 @@ public class M : MonoBehaviourPun
             print("Me autohookie, no hago nada");
             return;
         }
+
+       
+
         var CasterChar = PhotonView.Find(hookCasterID);
         var CasterTeam = CasterChar.GetComponent<M>().myTeam;
 
 
         if (CasterTeam != myTeam)
         {
-            print("Me Hookeo un enemigo");
+
             Die();
-            print("Mori, entonces aviso que tengo que dar oro");
+
             BringGoldForKill_Request(hookCasterID);
 
             Respawining();
@@ -233,14 +237,12 @@ public class M : MonoBehaviourPun
 
     private void BringGoldForKill_Request(int hookCasterID)
     {
-        print("hago la request de dar oro al servidor");
         ServerManager.Instance.photonView.RPC("GoldToKiller",RpcTarget.MasterClient,hookCasterID);
     }
 
     [PunRPC]
     void GetGoldForKill(int goldReward)
     {
-        print("aca recibiendo oro:" + goldReward);
         myGold.AddGold(goldReward);
     }
     private void Catched(Hook hook)
@@ -251,7 +253,6 @@ public class M : MonoBehaviourPun
     }
     public void Die()
     {
-        print("Die");
 
         ServerManager.Instance.photonView.RPC("CharacterDie_Request",RpcTarget.MasterClient,photonView.ViewID);
         OnDie();

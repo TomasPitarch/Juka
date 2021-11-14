@@ -41,34 +41,41 @@ public class NetSkill : SkillShoot
     }
     public override void CastSkillShoot(Vector3 point)
     {
+
+        print("netskill/CastSkillShoot");
         if (_cooldown)
         {
-            print("skill en cd");
+            print("el cd es:"+_cooldown);
             return;
         }
-        print("skilleo");
 
+        print("netskill/por llamara al skillshoot_SVRequest");
         SkillShoot_SVRequest(point);
+        CoolDownTimer();
 
     }
     void SkillShoot_SVRequest(Vector3 point)
     {
+        print("netskill/SkillShoot_SVRequest");
         photonView.RPC("SkillingNet", RpcTarget.MasterClient, point);
     }
 
     [PunRPC]
     void SkillingNet(Vector3 point)
     {
+        print("netskill/SkillingNet(dberia ser solo en master client)");
+
         SpawnNet();
 
         point.y = skillSpawnPoint.transform.position.y;
         SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
         net.Init(skillSpawnPoint.transform.position, SkillDirection, _skillSpeed, _lifeTime, photonView.ViewID);
-        CoolDownTimer();
+       
     }
 
     void SpawnNet()
     {
+        print("netskill/SpawnNet");
         //HookHeadCreation and event suscription//
         net = PhotonNetwork.Instantiate("Net",Vector3.zero,Quaternion.identity).GetComponent<Net>();
         net.OnObjectCollision += NetColitionHanlder;

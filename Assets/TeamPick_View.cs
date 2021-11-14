@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
@@ -31,82 +32,101 @@ public class TeamPick_View : MonoBehaviourPun
         TeamB.richText = true;
         WaitTeam.richText = true;
     }
+    
+    string PlayerListToString(List<Player> list)
+    {
+        string newString="";
 
+        foreach (var player in list)
+        {
+            newString = newString + "/" + player.NickName;
+        }
+
+        return newString;
+    }
    
     void TeamWaitHandler()
     {
-            string text="";
-
-            foreach (var player in teamManager.WaitTeam)
-            {
-
-                if (player == PhotonNetwork.LocalPlayer)
-                {
-
-                    text = text + "<color=green>" + player.NickName + "  </color>" + "\n";
-                }
-                else
-                {
-                    text = text + "<color=black>" + player.NickName + "  </color>" + "\n";
-                }
-            }
-
-            photonView.RPC("TeamWaitUpdate", RpcTarget.All, text);
-
+        photonView.RPC("TeamWaitUpdate",RpcTarget.All,PlayerListToString(teamManager.WaitTeam));
     }
     void TeamAHandler()
     {
-        string text = "";
-        foreach (var player in teamManager.TeamA)
-        {
-            if (player == PhotonNetwork.LocalPlayer)
-            {
-                text = text + "<color=green>" + player.NickName + "  </color>" + "\n";
-            }
-            else
-            {
-                text = text + "<color=black>" + player.NickName + "  </color>" + "\n";
-            }
-
-        }
-
-        photonView.RPC("TeamAUpdate", RpcTarget.All, text);
-
+        photonView.RPC("TeamAUpdate", RpcTarget.All, PlayerListToString(teamManager.TeamA));
     }
     void TeamBHandler()
     {
+        photonView.RPC("TeamBUpdate", RpcTarget.All, PlayerListToString(teamManager.TeamB));
+
+    }
+
+    [PunRPC]
+    void TeamWaitUpdate(string newText)
+    {
+        var nickNames = newText.Split('/');
+
         string text = "";
-        foreach (var player in teamManager.TeamB)
+
+        foreach (var playerNickName in nickNames)
         {
-            if (player == PhotonNetwork.LocalPlayer)
+
+            if (playerNickName == PhotonNetwork.LocalPlayer.NickName)
             {
-                text = text + "<color=green>" + player.NickName + "  </color>" + "\n";
+
+                text = text + "<color=green>" + playerNickName + "  </color>" + "\n";
             }
             else
             {
-                text = text + "<color=black>" + player.NickName + "  </color>" + "\n";
+                text = text + "<color=black>" + playerNickName + "  </color>" + "\n";
             }
         }
 
-        photonView.RPC("TeamBUpdate", RpcTarget.All, text);
+        WaitTeam.text = text;
+    }
+    [PunRPC]
+    void TeamAUpdate(string newText)
+    {
+        var nickNames = newText.Split('/');
 
-    }
+        string text = "";
 
-    [PunRPC]
-    void TeamWaitUpdate(string newList)
-    {
-        WaitTeam.text = newList;
-        WaitTeam.text = "<color=green>" + "lo que quieras" + "</color>";
+        foreach (var playerNickName in nickNames)
+        {
+
+            if (playerNickName == PhotonNetwork.LocalPlayer.NickName)
+            {
+
+                text = text + "<color=green>" + playerNickName + "  </color>" + "\n";
+            }
+            else
+            {
+                text = text + "<color=black>" + playerNickName + "  </color>" + "\n";
+            }
+        }
+
+        TeamA.text = text;
     }
     [PunRPC]
-    void TeamAUpdate(string newList)
+    void TeamBUpdate(string newText)
     {
-        TeamA.text = newList;
-    }
-    [PunRPC]
-    void TeamBUpdate(string newList)
-    {
-        TeamB.text = newList;
+        var nickNames = newText.Split('/');
+
+        string text = "";
+
+        foreach (var playerNickName in nickNames)
+        {
+
+            if (playerNickName == PhotonNetwork.LocalPlayer.NickName)
+            {
+
+                text = text + "<color=green>" + playerNickName + "  </color>" + "\n";
+            }
+            else
+            {
+                text = text + "<color=black>" + playerNickName + "  </color>" + "\n";
+            }
+        }
+
+        TeamB.text = text;
     }
 
 

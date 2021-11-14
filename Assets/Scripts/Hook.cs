@@ -55,7 +55,7 @@ public class Hook : MonoBehaviourPun
         SkillDirection = dir;
         skillSpawnPoint = SpawnPoint;
 
-        print("el caster del hook es:" + ServerManager.Instance.GetPlayer(CasterID));
+
 
         HookBehaviour();
     }
