@@ -12,8 +12,12 @@ public class ShiftSkill : Skill, IReseteable
 
     [SerializeField]
     float shiftTime;
-    
 
+
+    private void Start()
+    {
+        _cdTime = 5f;
+    }
     public void CastShift()
     {
         if(_cooldown)

@@ -9,6 +9,12 @@ public class ScoreView : MonoBehaviourPun
 {
     [SerializeField]
     TextMeshProUGUI scoreText;
+
+    [SerializeField]
+    TextMeshProUGUI scoreA;
+
+    [SerializeField]
+    TextMeshProUGUI scoreB;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,6 +31,9 @@ public class ScoreView : MonoBehaviourPun
     void UpdateView(int TeamA,int TeamB)
     {
         scoreText.text= "<color=red>Team A:" + TeamA+ " |<color=blue>| " + TeamB+":Team B";
+
+        scoreA.text = TeamA.ToString();
+        scoreB.text = TeamB.ToString();
     }
     
 

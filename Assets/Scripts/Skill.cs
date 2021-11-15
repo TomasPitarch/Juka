@@ -16,7 +16,7 @@ public class Skill : MonoBehaviourPun
 
     protected async void CoolDownTimer()
     {
-        print("arranca el cd");
+        print("arranca el cd:"+ _cdTime);
         _cooldown = true;
 
 

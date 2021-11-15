@@ -26,6 +26,7 @@ public class TeamPick_View : MonoBehaviourPun
             teamManager.OnTeamWaitUpdate += TeamWaitHandler;
             teamManager.OnTeamAUpdate += TeamAHandler;
             teamManager.OnTeamBUpdate += TeamBHandler;
+            teamManager.OnPlayerJoin += ViewHandler;
         }
 
         TeamA.richText = true;
@@ -56,6 +57,13 @@ public class TeamPick_View : MonoBehaviourPun
     void TeamBHandler()
     {
         photonView.RPC("TeamBUpdate", RpcTarget.All, PlayerListToString(teamManager.TeamB));
+
+    }
+    void ViewHandler(Player newPlayer)
+    {
+        photonView.RPC("TeamWaitUpdate", newPlayer, PlayerListToString(teamManager.WaitTeam));
+        photonView.RPC("TeamAUpdate", newPlayer, PlayerListToString(teamManager.TeamA));
+        photonView.RPC("TeamBUpdate", newPlayer, PlayerListToString(teamManager.TeamB));
 
     }
 

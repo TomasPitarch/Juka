@@ -14,7 +14,7 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     M Character;
 
-    bool _cameraLock = false;
+    bool _cameraLock = true;
 
 
     Vector3 AuxiliarPos;
@@ -81,6 +81,7 @@ public class CameraController : MonoBehaviour
     public void SetCharacter(M characterToSet)
     {
         Character = characterToSet;
+        CameraFollowPlayerBehaviour();
     }
     
 }

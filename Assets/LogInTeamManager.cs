@@ -4,6 +4,7 @@ using Photon.Pun;
 using UnityEngine.UI;
 using UnityEngine;
 using System;
+using System.Threading.Tasks;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 using ExitGames.Client.Photon;
@@ -13,12 +14,15 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
     public event Action OnTeamAUpdate= delegate{ };
     public event Action OnTeamBUpdate= delegate { };
     public event Action OnTeamWaitUpdate= delegate { };
+    public event Action<Player> OnPlayerJoin = delegate { };
 
-    int auxiliar = 0;
+
 
     public List<Player> TeamA;
     public List<Player> TeamB;
     public List<Player> WaitTeam;
+
+    List<Player> PlayersToSetTeam;
 
     [SerializeField]
     int maxPlayerA;
@@ -33,7 +37,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
 
     int playersReady=0;
 
-
+    bool _setPropertiesCompleted = false;
 
     // Start is called before the first frame update
     void Start()
@@ -55,6 +59,15 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
 
 
         readyToggle.onValueChanged.AddListener(PlayerReady_Request);
+    }
+
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        if(PhotonNetwork.IsMasterClient)
+        {
+            OnPlayerJoin(newPlayer);
+        }
+       
     }
 
     void PlayerReady_Request(bool checkValue)
@@ -188,7 +201,14 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
 
     public void StartGameButton()
     {
-       
+
+
+        PlayersToSetTeam = new List<Player>();
+        PlayersToSetTeam.AddRange(TeamA);
+        PlayersToSetTeam.AddRange(TeamB);
+
+        print(PlayersToSetTeam.Count);
+
             //Set Team A for all TeamA  Players//
             foreach (var player in TeamA)
             {
@@ -205,9 +225,21 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
                 var table = new Hashtable();
                 table.Add("Team", Team.B);
                 player.SetCustomProperties(table);
-                 
             }
-        
+
+            startButton.interactable = false;
+            WaitingSetUpToStartGame();
+
+
+    }
+
+    async void WaitingSetUpToStartGame()
+    {
+        while(!_setPropertiesCompleted)
+        {
+            await Task.Yield();
+        }
+        photonView.RPC("StartGamePlay", RpcTarget.All);
     }
 
     [PunRPC]
@@ -229,12 +261,20 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
         {
             return;
         }
-            
 
-        auxiliar++;
-        if(auxiliar>=TeamA.Count+TeamB.Count && auxiliar!=0)
+        if(PlayersToSetTeam.Contains(targetPlayer))
         {
-            photonView.RPC("StartGamePlay", RpcTarget.All);
+            PlayersToSetTeam.Remove(targetPlayer);
+        }
+        else
+        {
+            print("no contiene al player:" + targetPlayer.NickName);
+        }
+        
+
+        if(PlayersToSetTeam.Count==0)
+        {
+            _setPropertiesCompleted = true;
         }
        
     }

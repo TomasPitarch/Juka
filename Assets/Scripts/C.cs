@@ -52,7 +52,7 @@ public class C : MonoBehaviourPun
 
         //Si el chat esta activado no podemos hacer ninguna Accion mas que movernos,
         //o volver a desactivar el chat//
-        print("controler lockeado:" + _isLocked);
+
 
         if (_isLocked)
         {
