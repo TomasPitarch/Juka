@@ -16,7 +16,7 @@ public class Skill : MonoBehaviourPun
 
     protected async void CoolDownTimer()
     {
-        print("arranca el cd:"+ _cdTime);
+
         _cooldown = true;
 
 
@@ -30,7 +30,7 @@ public class Skill : MonoBehaviourPun
             if (_tokenCoolDownTimer)
             {
                 print("token activado");
-                _tokenCoolDownTimer = true;
+                _tokenCoolDownTimer = false;
 
                 OnCoolDownUpdate(_cdTime,_cdTime);
 

@@ -48,14 +48,12 @@ public class C : MonoBehaviourPunCallbacks
 
         if ((Team)PhotonNetwork.LocalPlayer.CustomProperties["Team"] == Team.A)
         {
-            print("seteo el recorder en grupo de interes 1");
             _recorder.InterestGroup = 1;
 
         }
         else
         {
 
-            print("seteo el recorder en grupo de interes 2");
             _recorder.InterestGroup = 2;
 
         }
@@ -63,26 +61,22 @@ public class C : MonoBehaviourPunCallbacks
 
     async void OnPUNJoin()
     {
-        print("arranmco la funcion async");
 
         while( PhotonVoiceNetwork.Instance.ClientState != ClientState.Joined)
         {
             await Task.Yield();
         }
 
-        print("el cliente pun joinio");
 
 
         if ((Team)PhotonNetwork.LocalPlayer.CustomProperties["Team"] == Team.A)
         {
-            print("OpChangeGroups(null, new byte[1] { (byte)1 })");
 
             PhotonVoiceNetwork.Instance.Client.OpChangeGroups(null, new byte[1] { (byte)1 });
 
         }
         else
         {
-            print("OpChangeGroups(null, new byte[1] { (byte)2 })");
             PhotonVoiceNetwork.Instance.Client.OpChangeGroups(null, new byte[1] { (byte)2 });
 
         }
@@ -140,16 +134,13 @@ public class C : MonoBehaviourPunCallbacks
         //Input de Voice//
         if (_recorder != null)
         {
-            print("hay recorder");
             if (Input.GetKey(KeyCode.V))
             {
 
-                print("V apretada, recorder transmision habilitada");
                 _recorder.TransmitEnabled = true;
             }
             else
             {
-                print("V soltada, recorder transmision deshabilitado");
                 _recorder.TransmitEnabled = false;
             }
         }

@@ -66,8 +66,9 @@ public class Hook : MonoBehaviourPun
             return;
         }
 
-        transform.position = skillSpawnPoint.transform.position;
         var HookInitialPosition = skillSpawnPoint.transform.position;
+        transform.position = HookInitialPosition;
+        
         var distance = (HookInitialPosition - transform.position).magnitude;
 
         while (!_hookCollided && distance < _skillRange)
@@ -82,17 +83,17 @@ public class Hook : MonoBehaviourPun
             await Task.Yield();
         }
 
-        distance = (skillSpawnPoint.transform.position - transform.position).magnitude;
+        distance = (HookInitialPosition - transform.position).magnitude;
 
         _hookCollided = true;
 
         while (distance > 0.5f)
         {
-            var directionToCome = (skillSpawnPoint.transform.position - transform.position).normalized;
+            var directionToCome = (HookInitialPosition - transform.position).normalized;
             var distanceToMove = directionToCome * _skillSpeed * Time.deltaTime;
 
             Move(distanceToMove);
-            distance = (skillSpawnPoint.transform.position - transform.position).magnitude;
+            distance = (HookInitialPosition - transform.position).magnitude;
 
             //myLine.SetPosition(0, skillSpawnPoint.transform.position);
             //myLine.SetPosition(1, transform.position);

@@ -18,12 +18,12 @@ public class HookSkill : SkillShoot
 
     
 
-    List<Hook> ListOfHooks;
+    
     private void Start()
     {
         _cooldown = false;
         _cdTime = data._coolDownTime;
-        ListOfHooks = new List<Hook>();
+       
     }
     
     public override void CastSkillShoot(Vector3 point)
@@ -43,18 +43,12 @@ public class HookSkill : SkillShoot
     [PunRPC]
     void SkillingHook(Vector3 point)
     {
-        if (ListOfHooks.Count < 1)
-        {
+     
             var hook = SpawnHook();
-            hook.OnHooksDestroy += HookHandler;
-
+           
             var SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
             hook.Init(skillSpawnPoint, data, SkillDirection, photonView.ViewID);
-
-            ListOfHooks.Add(hook);
-
-           
-        }
+        
     }
     
     Hook SpawnHook()
@@ -63,10 +57,6 @@ public class HookSkill : SkillShoot
         var newHook = PhotonNetwork.Instantiate("Hook", Vector3.zero, Quaternion.identity).GetComponent<Hook>();
         return newHook;
     }
-   
-   void HookHandler(Hook hook)
-    {
-        ListOfHooks.Remove(hook);
-    }
+
    
 }

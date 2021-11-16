@@ -16,7 +16,8 @@ public class SkillShoot : Skill, IReseteable
 
     public virtual void ResetCDs()
     {
-        _tokenCoolDownTimer = false;
+        print("resteo CD");
+        _tokenCoolDownTimer = true;
         _cooldown = false;
     }
 }

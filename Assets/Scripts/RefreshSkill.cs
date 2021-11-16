@@ -14,7 +14,10 @@ public class RefreshSkill : Skill
     }
     public void Cast(GoldComponent gold)
     {
-        if(!_cooldown && gold.CanPay(skillCost))
+        print("bool de cd del rearm cast:" + _cooldown);
+        print("oro:" + gold.CanPay(skillCost));
+
+        if (!_cooldown && gold.CanPay(skillCost))
         {
             print("Rearm");
             gold.Pay(skillCost);
@@ -24,6 +27,7 @@ public class RefreshSkill : Skill
 
     public void Rearm()
     {
+        print("rearm cantidad:" + ListOfSkills.Length);
         foreach (var skill in ListOfSkills)
         {
             skill.ResetCDs();

@@ -79,6 +79,9 @@ MonoBehaviour:
   - HeresWhy
   - UpdateNickNames
   - UpdatePlayerList_Request
+  - Die
+  - ServerDie
+  - ServerRespawn
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

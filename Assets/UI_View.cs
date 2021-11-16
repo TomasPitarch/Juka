@@ -39,9 +39,9 @@ public class UI_View : MonoBehaviour
 
     }
 
-    void Q_Skill_UIHandler(float actual,float total)
+    void Q_Skill_UIHandler(float actual, float total)
     {
-        print("update ui de la Q.Actual:" + actual + "/total:" + total);
+        print("se actualiza la Q");
         Q_skill.fillAmount = actual / total;
     }
     void W_Skill_UIHandler(float actual, float total)
@@ -50,7 +50,6 @@ public class UI_View : MonoBehaviour
     }
     void E_Skill_UIHandler(float actual, float total)
     {
-        print("update ui de la E.Actual:" + actual + "/total:" + total);
 
         E_skill.fillAmount = actual / total;
     }

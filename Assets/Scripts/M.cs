@@ -85,6 +85,8 @@ public class M : MonoBehaviourPun
     // States//
     void NormalStatus()
     {
+
+
         _canMove = true;
         _canSkill1 = true;
         _canSkill2 = true;
@@ -104,6 +106,19 @@ public class M : MonoBehaviourPun
     }
     void ShiftStatus()
     {
+        myNavMesh.ResetPath();
+        _canMove = false;
+        _canSkill1 = false;
+        _canSkill2 = false;
+        _canSkill3 = false;
+
+        GetComponent<Rigidbody>().detectCollisions = false;
+    }
+    void DieStatus()
+    {
+
+        print("Die Status");
+
         myNavMesh.ResetPath();
         _canMove = false;
         _canSkill1 = false;
@@ -148,8 +163,8 @@ public class M : MonoBehaviourPun
 
     public void StopMove()
     {
-        myNavMesh.isStopped=true;
-        //myNavMesh.ResetPath();
+        //myNavMesh.isStopped=true;
+        myNavMesh.ResetPath();
         //myNavMesh.enabled = false;
         OnStop();
     }
@@ -157,8 +172,8 @@ public class M : MonoBehaviourPun
     {
         if (_canSkill1)
         {
-            hookSkill.CastSkillShoot(point);
             TurnToCastDirection(point);
+            hookSkill.CastSkillShoot(point);
 
             OnHookShoot();
         }
@@ -169,9 +184,8 @@ public class M : MonoBehaviourPun
 
         if (_canSkill2)
         {
-            netSkill.CastSkillShoot(point);
             TurnToCastDirection(point);
-
+            netSkill.CastSkillShoot(point);
 
             OnNetShoot();
         }
@@ -229,6 +243,7 @@ public class M : MonoBehaviourPun
         if (photonView.ViewID == hookCasterID)
         {
             print("Me autohookie, no hago nada");
+            NormalStatus();
             return;
         }
 
@@ -240,12 +255,7 @@ public class M : MonoBehaviourPun
 
         if (CasterTeam != myTeam)
         {
-
-            Die();
-
-            BringGoldForKill_Request(hookCasterID);
-
-            Respawining();
+            Die(hookCasterID);
         }
         else
         {
@@ -253,7 +263,15 @@ public class M : MonoBehaviourPun
             Catched(Hook);
         }
     }
+    void Die(int killerID)
+    {
+        photonView.RPC("ServerDie", RpcTarget.MasterClient);
+        OnDie();
 
+        ServerManager.Instance.photonView.RPC("CharacterDie_Request", RpcTarget.MasterClient, photonView.ViewID);
+        BringGoldForKill_Request(killerID);
+        Respawining();
+    }
     private void BringGoldForKill_Request(int hookCasterID)
     {
         ServerManager.Instance.photonView.RPC("GoldToKiller",RpcTarget.MasterClient,hookCasterID);
@@ -270,13 +288,16 @@ public class M : MonoBehaviourPun
         NetStatus();
         hook.OnHooksEnd += BackToNormality;
     }
-    public void Die()
+
+    [PunRPC]
+    public void ServerDie()
     {
-
-        ServerManager.Instance.photonView.RPC("CharacterDie_Request",RpcTarget.MasterClient,photonView.ViewID);
-        OnDie();
-
-        NetStatus();
+        ShiftStatus();
+    }
+    [PunRPC]
+    public void ServerRespawn()
+    {
+        NormalStatus();
     }
     async void Respawining()
     {
@@ -303,11 +324,14 @@ public class M : MonoBehaviourPun
 
     public void Respawn()
     {
-        transform.position=ServerManager.Instance.ClientManager.GetRandomReSpawnPoint(myTeam).position;
         gameObject.SetActive(true);
+        var respawnPosition= ServerManager.Instance.ClientManager.GetRandomReSpawnPoint(myTeam).position;
+        myNavMesh.Warp(respawnPosition);
+        
         OnRespawn();
 
         NormalStatus();
+        photonView.RPC("ServerRespawn", RpcTarget.MasterClient);
     }
    
 

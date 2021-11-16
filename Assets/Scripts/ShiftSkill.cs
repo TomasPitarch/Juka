@@ -27,7 +27,10 @@ public class ShiftSkill : Skill, IReseteable
         }
 
         print("Shift");
-        photonView.RPC("ShiftBehaviour", RpcTarget.All);
+
+        photonView.RPC("ShiftBehaviour", RpcTarget.MasterClient);
+        ShiftBehaviour();
+
         CoolDownTimer();
     }
    
