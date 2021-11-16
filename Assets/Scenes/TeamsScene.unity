@@ -445,7 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eff3e2ef46491b43838c945b23dcc92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPlayerA: 1
+  maxPlayerA: 2
   maxPlayerB: 1
   startButton: {fileID: 3469299264777705914}
   readyToggle: {fileID: 3469299263754554932}

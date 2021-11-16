@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 using Photon.Voice.Unity;
 using Photon.Voice.PUN;
+using Photon.Realtime;
 
-public class C : MonoBehaviourPun
+public class C : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     LayerMask GroundLayer;
@@ -20,9 +22,17 @@ public class C : MonoBehaviourPun
     Vector3 Point;
 
     bool _isLocked;
+
+    [SerializeField]
     Recorder _recorder;
 
+   
 
+    private void Awake()
+    {
+        PhotonVoiceNetwork.Instance.PrimaryRecorder = _recorder;
+
+    }
     private void Start()
     {
       
@@ -33,10 +43,51 @@ public class C : MonoBehaviourPun
                 chatManager.OnDeselect += () => _isLocked = false; //Lambda
             }
 
-        //_recorder = PhotonVoiceNetwork.Instance.PrimaryRecorder;
+        OnPUNJoin();
 
+
+        if ((Team)PhotonNetwork.LocalPlayer.CustomProperties["Team"] == Team.A)
+        {
+            print("seteo el recorder en grupo de interes 1");
+            _recorder.InterestGroup = 1;
+
+        }
+        else
+        {
+
+            print("seteo el recorder en grupo de interes 2");
+            _recorder.InterestGroup = 2;
+
+        }
     }
 
+    async void OnPUNJoin()
+    {
+        print("arranmco la funcion async");
+
+        while( PhotonVoiceNetwork.Instance.ClientState != ClientState.Joined)
+        {
+            await Task.Yield();
+        }
+
+        print("el cliente pun joinio");
+
+
+        if ((Team)PhotonNetwork.LocalPlayer.CustomProperties["Team"] == Team.A)
+        {
+            print("OpChangeGroups(null, new byte[1] { (byte)1 })");
+
+            PhotonVoiceNetwork.Instance.Client.OpChangeGroups(null, new byte[1] { (byte)1 });
+
+        }
+        else
+        {
+            print("OpChangeGroups(null, new byte[1] { (byte)2 })");
+            PhotonVoiceNetwork.Instance.Client.OpChangeGroups(null, new byte[1] { (byte)2 });
+
+        }
+
+    }
     void Update()
     {
        
@@ -89,12 +140,16 @@ public class C : MonoBehaviourPun
         //Input de Voice//
         if (_recorder != null)
         {
+            print("hay recorder");
             if (Input.GetKey(KeyCode.V))
             {
+
+                print("V apretada, recorder transmision habilitada");
                 _recorder.TransmitEnabled = true;
             }
             else
             {
+                print("V soltada, recorder transmision deshabilitado");
                 _recorder.TransmitEnabled = false;
             }
         }

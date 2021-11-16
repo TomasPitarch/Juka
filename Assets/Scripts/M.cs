@@ -10,7 +10,7 @@ using UnityEngine;
 public enum Team{A,B};
 public class M : MonoBehaviourPun
 {
-    public event Action OnMove = delegate { };
+    public event Action<Vector3> OnMove = delegate { };
     public event Action OnStop = delegate { };
     public event Action OnHookShoot = delegate { };
     public event Action OnNetShoot = delegate { };
@@ -51,6 +51,12 @@ public class M : MonoBehaviourPun
 
     [SerializeField]
     GameObject netStatusPrefab;
+
+    [SerializeField]
+    GameObject _cursorArrowPrefab;
+
+    Animation cursorAnimation;
+
     void Start()
     {
         myNavMesh = GetComponent<NavMeshAgent>();
@@ -67,6 +73,10 @@ public class M : MonoBehaviourPun
 
         myGold = GetComponent<GoldComponent>();
 
+
+        cursorAnimation = Instantiate(_cursorArrowPrefab, new Vector3(100,100,100),Quaternion.identity).GetComponent<Animation>();
+
+        OnMove += ShowMovementCursor;
 
         NormalStatus();
     }
@@ -123,10 +133,19 @@ public class M : MonoBehaviourPun
         if(_canMove)
         {
             myNavMesh.SetDestination(destination);
-            OnMove();
+
+            OnMove(destination);
         }
        
     }
+
+    void ShowMovementCursor(Vector3 destination)
+    {
+        cursorAnimation.transform.position = destination;
+        cursorAnimation.Rewind();
+        cursorAnimation.Play();
+    }
+
     public void StopMove()
     {
         myNavMesh.isStopped=true;

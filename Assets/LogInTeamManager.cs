@@ -207,7 +207,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
         PlayersToSetTeam.AddRange(TeamA);
         PlayersToSetTeam.AddRange(TeamB);
 
-        print(PlayersToSetTeam.Count);
+
 
             //Set Team A for all TeamA  Players//
             foreach (var player in TeamA)

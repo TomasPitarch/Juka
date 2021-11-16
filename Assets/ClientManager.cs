@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Photon.Realtime;
 using Photon.Pun;
+using Photon.Voice.Unity;
+using Photon.Voice.PUN;
 using UnityEngine;
 
 public class ClientManager : MonoBehaviourPun
@@ -44,7 +46,6 @@ public class ClientManager : MonoBehaviourPun
         {
             var randomSpawnpoint = GetRandomSpawnPoint(SpawnPointsT1);
             character = PhotonNetwork.Instantiate("Char A", randomSpawnpoint.position, Quaternion.identity).GetComponent<M>();
-
         }
         else
         {
@@ -55,11 +56,15 @@ public class ClientManager : MonoBehaviourPun
         cameraController.SetCharacter(character);
         controller.SetCharacter(character);
 
+        PhotonVoiceNetwork.Instance.SpeakerPrefab = character.gameObject;
 
         UI.SetHandlers(character);
 
+        
+
         photonView.RPC("RegisterCharacter",RpcTarget.MasterClient,character.photonView.ViewID,PhotonNetwork.LocalPlayer);
     }
+
     Transform GetRandomSpawnPoint(List<Transform> spawnPoints)
     {
 

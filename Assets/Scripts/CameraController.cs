@@ -56,7 +56,7 @@ public class CameraController : MonoBehaviour
             _cameraLock = !_cameraLock;
         }
 
-        if(_cameraLock)
+        if(_cameraLock && Character!=null)
         {
             CameraFollowPlayerBehaviour();
         }

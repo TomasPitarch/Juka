@@ -405,6 +405,8 @@ MonoBehaviour:
   shiftSkill: {fileID: 8366660523103370967}
   refreshSkill: {fileID: 3886553564748642602}
   netStatusPrefab: {fileID: 0}
+  _cursorArrowPrefab: {fileID: 3750812764573365532, guid: c3b6040f102868242836d96af1ce7946,
+    type: 3}
 --- !u!114 &8830802566711791632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,7 +575,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 126494ae2a10a34499272ed97a6c9f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  logLevel: 0
+  logLevel: 5
   ignoreGlobalLogLevel: 0
   recorderInUse: {fileID: 0}
   speakerInUse: {fileID: 3817360480295003900}
