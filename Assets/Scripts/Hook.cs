@@ -123,7 +123,7 @@ public class Hook : MonoBehaviourPun
         }
 
         if (other.gameObject.tag == "Character" && !_hookCollided)
-            {
+        {
 
                 CharacterHooked = other.gameObject.GetComponent<M>();
                 var charPV_ID = CharacterHooked.photonView.ViewID;
@@ -136,7 +136,7 @@ public class Hook : MonoBehaviourPun
                 _hookCollided = true;
 
                 //OnObjectCollision();
-            }
+        }
         
     }
     public void Move(Vector3 distanceToMove)

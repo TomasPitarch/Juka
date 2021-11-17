@@ -25,15 +25,18 @@ public class HookSkill : SkillShoot
         _cdTime = data._coolDownTime;
        
     }
-    
+    public bool CanSkill()
+    {
+        return !_cooldown;
+    }
     public override void CastSkillShoot(Vector3 point)
     {
-        if (_cooldown)
+        if (CanSkill())
         {
-            return;
+            SkillShoot_SVRequest(point);
+            CoolDownTimer();
         }
-        SkillShoot_SVRequest(point);
-        CoolDownTimer();
+       
     }
     void SkillShoot_SVRequest(Vector3 point)
     {

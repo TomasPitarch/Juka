@@ -121,7 +121,6 @@ public sealed class ServerManager:MonoBehaviourPun
     {
         if(TeamAScore>=maxScore)
         {
-            
             photonView.RPC("Win",RpcTarget.All,Team.A);
         }
         else if(TeamBScore >= maxScore)

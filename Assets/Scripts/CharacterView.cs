@@ -13,14 +13,14 @@ public class CharacterView : MonoBehaviour
         myModel = GetComponent<M>();
 
         //Suscripcion a los eventos del Char//
-        //myModel.OnMove += MoveAnimation;        
+        myModel.OnMove += MoveAnimation;        
         myModel.OnStop += StopAnimation;
         myModel.OnHookShoot += HookAnimation;
         myModel.OnNetShoot += NetAnimation;
 
     }
 
-    void MoveAnimation()
+    void MoveAnimation(Vector3 nada)
     {
         //Debug.Log("animamos a la derecha");
         myAnim.SetBool("Idle", false);            

@@ -49,13 +49,10 @@ public class C : MonoBehaviourPunCallbacks
         if ((Team)PhotonNetwork.LocalPlayer.CustomProperties["Team"] == Team.A)
         {
             _recorder.InterestGroup = 1;
-
         }
         else
         {
-
             _recorder.InterestGroup = 2;
-
         }
     }
 
@@ -71,14 +68,11 @@ public class C : MonoBehaviourPunCallbacks
 
         if ((Team)PhotonNetwork.LocalPlayer.CustomProperties["Team"] == Team.A)
         {
-
             PhotonVoiceNetwork.Instance.Client.OpChangeGroups(null, new byte[1] { (byte)1 });
-
         }
         else
         {
             PhotonVoiceNetwork.Instance.Client.OpChangeGroups(null, new byte[1] { (byte)2 });
-
         }
 
     }

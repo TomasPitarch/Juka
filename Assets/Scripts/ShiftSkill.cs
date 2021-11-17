@@ -48,4 +48,11 @@ public class ShiftSkill : Skill, IReseteable
 
         _tokenCoolDownTimer = false;
     }
+
+    
+    public bool CanSkill()
+    {
+        return !_cooldown;
+    }
+   
 }

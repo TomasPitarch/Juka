@@ -86,12 +86,10 @@ public class M : MonoBehaviourPun
     void NormalStatus()
     {
 
-
         _canMove = true;
         _canSkill1 = true;
         _canSkill2 = true;
         _canSkill3 = true;
-
 
 
         GetComponent<Rigidbody>().detectCollisions = true;
@@ -170,7 +168,7 @@ public class M : MonoBehaviourPun
     }
     public void Skill1(Vector3 point)
     {
-        if (_canSkill1)
+        if (_canSkill1 && hookSkill.CanSkill())
         {
             TurnToCastDirection(point);
             hookSkill.CastSkillShoot(point);
@@ -182,7 +180,7 @@ public class M : MonoBehaviourPun
     public void Skill2(Vector3 point)
     {
 
-        if (_canSkill2)
+        if (_canSkill2 && netSkill.CanSkill())
         {
             TurnToCastDirection(point);
             netSkill.CastSkillShoot(point);
@@ -193,7 +191,11 @@ public class M : MonoBehaviourPun
     }
     public void Skill3()
     {
-        shiftSkill.CastShift();
+        if (_canSkill3 && shiftSkill.CanSkill())
+        {
+            shiftSkill.CastShift();
+        }
+            
     }
     public void Skill4()
     {

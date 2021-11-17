@@ -199,7 +199,7 @@ public class ChatManager : MonoBehaviourPun,IChatClientListener
         fadeToken = true;
 
         content.GetComponent<CanvasRenderer>().SetAlpha(1);
-        
+   
 
         FadeChat();
     }
@@ -207,7 +207,7 @@ public class ChatManager : MonoBehaviourPun,IChatClientListener
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return)|| Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return)|| Input.GetKeyDown(KeyCode.KeypadEquals))
         {
             print("apretamos para abrir el chat");
             print("el chat esta "+_chatOn);

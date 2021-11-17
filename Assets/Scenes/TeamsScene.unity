@@ -446,7 +446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxPlayerA: 1
-  maxPlayerB: 0
+  maxPlayerB: 1
   startButton: {fileID: 3469299264777705914}
   readyToggle: {fileID: 3469299263754554932}
 --- !u!114 &3469299263489430722

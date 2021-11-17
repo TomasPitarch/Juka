@@ -43,15 +43,14 @@ public class NetSkill : SkillShoot
     {
 
         print("netskill/CastSkillShoot");
-        if (_cooldown)
+        if (CanSkill())
         {
-            print("el cd es:"+_cooldown);
-            return;
+            print("netskill/por llamara al skillshoot_SVRequest");
+            SkillShoot_SVRequest(point);
+            CoolDownTimer();
         }
 
-        print("netskill/por llamara al skillshoot_SVRequest");
-        SkillShoot_SVRequest(point);
-        CoolDownTimer();
+      
 
     }
     void SkillShoot_SVRequest(Vector3 point)
@@ -81,5 +80,8 @@ public class NetSkill : SkillShoot
         net.OnObjectCollision += NetColitionHanlder;
     }
 
-    
+    internal bool CanSkill()
+    {
+        return !_cooldown;
+    }
 }
