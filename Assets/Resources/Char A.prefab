@@ -668,7 +668,6 @@ GameObject:
   - component: {fileID: 2839505693470734476}
   - component: {fileID: -4757450786839172962}
   - component: {fileID: 7031036064386395909}
-  - component: {fileID: -8684248573307782902}
   - component: {fileID: -7010382632444662854}
   - component: {fileID: -6543379654185016188}
   - component: {fileID: -6538285852315029348}
@@ -682,6 +681,7 @@ GameObject:
   - component: {fileID: 1352871279574011366}
   - component: {fileID: 3416902048428147523}
   - component: {fileID: 8440148856909970227}
+  - component: {fileID: -8684248573307782902}
   m_Layer: 0
   m_Name: Char A
   m_TagString: Character
@@ -891,45 +891,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &-8684248573307782902
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5185126349465196111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowLayerWeightsInspector: 1
-  ShowParameterInspector: 1
-  m_SynchronizeParameters:
-  - Type: 9
-    SynchronizeType: 1
-    Name: HookShoot
-  - Type: 9
-    SynchronizeType: 1
-    Name: NetShoot
-  - Type: 4
-    SynchronizeType: 1
-    Name: Idle
-  - Type: 9
-    SynchronizeType: 1
-    Name: Moving
-  - Type: 9
-    SynchronizeType: 1
-    Name: NetCaught
-  - Type: 9
-    SynchronizeType: 1
-    Name: Shift
-  - Type: 9
-    SynchronizeType: 1
-    Name: Hooked
-  m_SynchronizeLayers:
-  - SynchronizeType: 0
-    LayerIndex: 0
 --- !u!195 &-7010382632444662854
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1164,6 +1125,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shiftTime: 2
+--- !u!114 &-8684248573307782902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5185126349465196111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 9
+    SynchronizeType: 1
+    Name: HookShoot
+  - Type: 9
+    SynchronizeType: 1
+    Name: NetShoot
+  - Type: 4
+    SynchronizeType: 1
+    Name: Idle
+  - Type: 9
+    SynchronizeType: 1
+    Name: Moving
+  - Type: 9
+    SynchronizeType: 1
+    Name: NetCaught
+  - Type: 9
+    SynchronizeType: 1
+    Name: Shift
+  - Type: 9
+    SynchronizeType: 1
+    Name: Hooked
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
 --- !u!1 &5185141217468344487
 GameObject:
   m_ObjectHideFlags: 0

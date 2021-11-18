@@ -135,8 +135,16 @@ public class M : MonoBehaviourPun
     }
     void GhostFormEnd()
     {
-        OnGhostEnd();
-        NormalActionStatus();
+        if (photonView.IsMine)
+        {
+            print("termine mi forma de shift");
+            OnGhostEnd();
+            NormalActionStatus();
+        }
+        else
+        {
+            print("este shift no soy el dueño");
+        }
     }
 
     //----------RPCs------------//
