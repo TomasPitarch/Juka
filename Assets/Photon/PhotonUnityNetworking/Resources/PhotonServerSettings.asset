@@ -85,6 +85,9 @@ MonoBehaviour:
   - BackToNormality
   - HookedMove
   - ServerCatched
+  - RemoveCharacterFromHook
+  - HookedByAly
+  - HookedByEnemy
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
