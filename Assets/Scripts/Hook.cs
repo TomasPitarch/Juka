@@ -121,34 +121,44 @@ public class Hook : MonoBehaviourPun
         if (other.gameObject.tag == "Character" && !_hookCollided)
         {
 
-                print("7-el hook choca contra un player");
                 CharacterHooked = other.gameObject.GetComponent<M>();
                 var charPV_ID = CharacterHooked.photonView.ViewID;
                 var playerHooked = ServerManager.Instance.GetPlayer(charPV_ID);
                 var hookPV_ID = photonView.ViewID;
+                var Caster = PhotonView.Find(CasterID).GetComponent<M>();
 
-                int[] IDs = new int[] {hookPV_ID,CasterID};
 
-                print("8-el hook del server le manda un rpc al cliente del character hookeado");
-                CharacterHooked.photonView.RPC("Hooked", playerHooked, IDs);
-
-                if (CasterID!=charPV_ID)
+                if (CharacterHooked.photonView.ViewID == CasterID)
                 {
-                _hookCollided = true;
+                     print("el hook le pego al dueño, no hago nada");
+                     _hookCollided = false;
+                     CharacterHooked = null;
+                     return;
                 }
-               
-           
+                else if (CharacterHooked.myTeam == Caster.myTeam)
+                {
+                    print("mismo equipo,traigo hacia mi");
+                    CharacterHooked.photonView.RPC("HookedByAly", playerHooked, hookPV_ID);
+                    _hookCollided = true;
+                }
+                else
+                {
+                    print("enemigo, tengo que matarlo");
+                    CharacterHooked.photonView.RPC("HookedByEnemy", playerHooked, CasterID);
+                    CharacterHooked = null;
+                    _hookCollided = true;
+                }
 
-                //OnObjectCollision();
+            //OnObjectCollision();
         }
         
     }
 
-    [PunRPC]
-    void RemoveCharacterFromHook()
-    {
-        CharacterHooked = null;
-    }
+    //[PunRPC]
+    //void RemoveCharacterFromHook()
+    //{
+    //    CharacterHooked = null;
+    //}
     void Move(Vector3 distanceToMove)
     {
         if(!PhotonNetwork.IsMasterClient)

@@ -43,7 +43,6 @@ public class NetSkill : SkillShoot
     {
         if (CanSkill())
         {
-
             SkillShoot_SVRequest(point);
             CoolDownTimer();
         }

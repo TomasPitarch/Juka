@@ -75,8 +75,22 @@ public class Net : MonoBehaviourPun
             var charPV_ID = CharacterTraped.photonView.ViewID;
             var playerTraped= ServerManager.Instance.GetPlayer(charPV_ID);
 
+            var Caster = PhotonView.Find(CasterID).GetComponent<M>();
+
             //int[] IDs = new int[] { charPV_ID, CasterID };
-            CharacterTraped.photonView.RPC("CatchedByNet", playerTraped,CasterID);
+            if(CharacterTraped.photonView.ViewID==CasterID)
+            {
+                print("la red le pego al dueño");
+                return;
+            }
+            else if(CharacterTraped.myTeam==Caster.myTeam)
+            {
+                print("mismo equipo, no hago nada");
+            }
+            else
+            {
+                CharacterTraped.photonView.RPC("CatchedByNet", playerTraped, CasterID);
+            }
 
             OnObjectCollision();
         }

@@ -99,7 +99,6 @@ public class M : MonoBehaviourPun
     }
     void HookedActionStatus()
     {
-        print("11-hooked action status, reseteo movilidad en navmesh y desactivo los skilles y movimiento");
         myNavMesh.ResetPath();
         OnHooked();
         _canMove = false;
@@ -141,42 +140,50 @@ public class M : MonoBehaviourPun
     }
 
     //----------RPCs------------//
-    [PunRPC]
-    public void Hooked(int[] IDs)
-    {
-        print("9-Me hookearon");
-        var HookID = IDs[0];
-        var hookCasterID = IDs[1];
+    //[PunRPC]
+    //public void Hooked(int[] IDs)
+    //{
+    //    var HookID = IDs[0];
+    //    var hookCasterID = IDs[1];
 
 
-        if (photonView.ViewID == hookCasterID)
-        {
-            print("me autohookie, me saco del gancho");
-            var hook = PhotonView.Find(HookID).GetComponent<Hook>();
-            hook.photonView.RPC("RemoveCharacterFromHook", RpcTarget.MasterClient);
-            return;
-        }
+    //    if (photonView.ViewID == hookCasterID)
+    //    {
+    //        var hook = PhotonView.Find(HookID).GetComponent<Hook>();
+    //        hook.photonView.RPC("RemoveCharacterFromHook", RpcTarget.MasterClient);
+    //        return;
+    //    }
 
-        var CasterChar = PhotonView.Find(hookCasterID);
-        var CasterTeam = CasterChar.GetComponent<M>().myTeam;
+    //    var CasterChar = PhotonView.Find(hookCasterID);
+    //    var CasterTeam = CasterChar.GetComponent<M>().myTeam;
 
 
-        if (CasterTeam != myTeam)
-        {
-            print("10-Me hookeo un enemigo");
+    //    if (CasterTeam != myTeam)
+    //    {
             
-            Die(hookCasterID);
+    //        Die(hookCasterID);
 
-            //Como muero me saco del gancho//
-            var hook = PhotonView.Find(HookID).GetComponent<Hook>();
-            hook.photonView.RPC("RemoveCharacterFromHook", RpcTarget.MasterClient);
-        }
-        else
-        {
-            print("10-Me Hookeo un aliado");
-            Catched(HookID);
-        }
+    //        //Como muero me saco del gancho//
+    //        var hook = PhotonView.Find(HookID).GetComponent<Hook>();
+    //        hook.photonView.RPC("RemoveCharacterFromHook", RpcTarget.MasterClient);
+    //    }
+    //    else
+    //    {
+    //        Catched(HookID);
+    //    }
+    //}
+
+    [PunRPC]
+    void HookedByEnemy(int hookCasterID)
+    {
+        Die(hookCasterID);
     }
+    [PunRPC]
+    void HookedByAly(int HookID)
+    {
+        Catched(HookID);
+    }
+
     [PunRPC]
     void BackToNormality()
     {
@@ -190,7 +197,6 @@ public class M : MonoBehaviourPun
     [PunRPC]
     public void CatchedByNet(int CasterID)
     {
-        
         //Animacion de la Red//
         var net = PhotonNetwork.Instantiate("NetStatus Team 1", transform.position, Quaternion.identity).GetComponent<NetStatus>();
         net.OnNetReleased += NormalActionStatus;
@@ -207,21 +213,17 @@ public class M : MonoBehaviourPun
     [PunRPC]
     void ServerCatched(int HookID)
     {
-        print("13-le llega al servidor que fui atrapado, y le avisa quien atrapo, y se suscribe");
-
         var hook = PhotonView.Find(HookID).GetComponent<Hook>();
         hook.OnHooksEnd += BackOwnerNormality;
     }
     [PunRPC]
     public void ServerDie()
     {
-        print("12-Le llega al servidor que murio");
         ServerDieStatus();
     }
     [PunRPC]
     public void ServerRespawn()
     {
-        print("19-Le llega al servidor ya respawnie asique puedo volver a colisionar");
         ServerRespawnStatus();
     }
 
@@ -239,7 +241,6 @@ public class M : MonoBehaviourPun
     }
     void ServerRespawnStatus()
     {
-        print("20-Se puso para que  colisione");
         GetComponent<Rigidbody>().detectCollisions = true;
     }
     void BackOwnerNormality()
@@ -251,8 +252,6 @@ public class M : MonoBehaviourPun
     //-------ASync-------//
     async void Respawining()
     {
-
-        print("15-Me pogno a respawnear en 5 segundos");
         await Task.Delay(5000);
         Respawn();
     }
@@ -285,7 +284,7 @@ public class M : MonoBehaviourPun
     {
         if (_canSkill1 && hookSkill.CanSkill())
         {
-            print("1- el character Skillea el hook");
+
             myNavMesh.ResetPath();
             TurnToCastDirection(point);
             hookSkill.CastSkillShoot(point);
@@ -327,10 +326,8 @@ public class M : MonoBehaviourPun
     }
     void Die(int killerID)
     {
-        print("11-Muero y le aviso al server que cambie su estatus a no colisionable");
         photonView.RPC("ServerDie", RpcTarget.MasterClient);
 
-        print("13-Me pongo en estado de muerte y no puedo ejecutar acciones");
         DieActionStatus();
         OnDie();
 
@@ -340,17 +337,12 @@ public class M : MonoBehaviourPun
     }
     void Catched(int HookID)
     {
-        print("11-Catched");
         HookedActionStatus();
-        print("12-le aviso al servidor que fui atrapado");
-
         photonView.RPC("ServerCatched", RpcTarget.MasterClient,HookID);
         
     }
     public void Respawn()
     {
-
-        print("16-Respawneo");
         gameObject.SetActive(true);
         var respawnPosition= ServerManager.Instance.ClientManager.GetRandomReSpawnPoint(myTeam).position;
         myNavMesh.Warp(respawnPosition);
@@ -359,7 +351,6 @@ public class M : MonoBehaviourPun
 
         NormalActionStatus();
 
-        print("17-Le aviso al servidor que respawnieo y puede volver a colisionar");
         photonView.RPC("ServerRespawn", RpcTarget.MasterClient);
     }
    
