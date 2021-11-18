@@ -700,9 +700,9 @@ MonoBehaviour:
   logLevel: 3
   ignoreGlobalLogLevel: 0
   recorderInUse: {fileID: 0}
-  speakerInUse: {fileID: 0}
+  speakerInUse: {fileID: 8440643601002866098}
   AutoCreateRecorderIfNotFound: 0
-  UsePrimaryRecorder: 0
+  UsePrimaryRecorder: 1
   SetupDebugSpeaker: 0
 --- !u!114 &7611879909148581289
 MonoBehaviour:
@@ -723,8 +723,8 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 5447906621294171199}
   - {fileID: 6784636112244662483}
+  - {fileID: 5447906621294171199}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
