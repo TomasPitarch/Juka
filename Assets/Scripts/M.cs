@@ -11,7 +11,9 @@ public enum Team{A,B};
 public class M : MonoBehaviourPun
 {
     public event Action<Vector3> OnMove = delegate { };
-    public event Action OnStop = delegate { };
+    public event Action OnHooked = delegate { };
+    public event Action OnIdle = delegate { };
+    public event Action OnTrapped = delegate { };
     public event Action OnHookShoot = delegate { };
     public event Action OnNetShoot = delegate { };
     public event Action OnDie = delegate { };
@@ -90,6 +92,7 @@ public class M : MonoBehaviourPun
         _canSkill1 = true;
         _canSkill2 = true;
         _canSkill3 = true;
+        OnIdle();
 
 
         GetComponent<Rigidbody>().detectCollisions = true;
@@ -97,6 +100,16 @@ public class M : MonoBehaviourPun
     void NetStatus()
     {
         myNavMesh.ResetPath();
+        OnTrapped();
+        _canMove = false;
+        _canSkill1 = false;
+        _canSkill2 = false;
+        _canSkill3 = false;
+    }
+    void HookedStatus()
+    {
+        myNavMesh.ResetPath();
+        OnHooked();
         _canMove = false;
         _canSkill1 = false;
         _canSkill2 = false;
@@ -147,7 +160,8 @@ public class M : MonoBehaviourPun
         {
             myNavMesh.SetDestination(destination);
 
-            OnMove(destination);
+            OnMove(destination);           
+            
         }
        
     }
@@ -164,12 +178,13 @@ public class M : MonoBehaviourPun
         //myNavMesh.isStopped=true;
         myNavMesh.ResetPath();
         //myNavMesh.enabled = false;
-        OnStop();
+        
     }
     public void Skill1(Vector3 point)
     {
         if (_canSkill1 && hookSkill.CanSkill())
         {
+            myNavMesh.ResetPath();
             TurnToCastDirection(point);
             hookSkill.CastSkillShoot(point);
 
@@ -182,6 +197,7 @@ public class M : MonoBehaviourPun
 
         if (_canSkill2 && netSkill.CanSkill())
         {
+            myNavMesh.ResetPath();
             TurnToCastDirection(point);
             netSkill.CastSkillShoot(point);
 
@@ -287,7 +303,7 @@ public class M : MonoBehaviourPun
     private void Catched(Hook hook)
     {
         print("Catched");
-        NetStatus();
+        HookedStatus();
         hook.OnHooksEnd += BackToNormality;
     }
 

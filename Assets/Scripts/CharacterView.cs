@@ -13,23 +13,28 @@ public class CharacterView : MonoBehaviour
         myModel = GetComponent<M>();
 
         //Suscripcion a los eventos del Char//
-        myModel.OnMove += MoveAnimation;        
-        myModel.OnStop += StopAnimation;
+        myModel.OnMove += MoveAnimation;
+        myModel.OnIdle += IdleAnimation;
+        myModel.OnTrapped += NetCaughtAnimation;
+        myModel.OnHooked += HookedAnimation;
         myModel.OnHookShoot += HookAnimation;
         myModel.OnNetShoot += NetAnimation;
+        myModel.OnGhostStart += ShiftAnimation;
+       
 
     }
 
     void MoveAnimation(Vector3 nada)
     {
-        //Debug.Log("animamos a la derecha");
+        
         myAnim.SetBool("Idle", false);            
-        myAnim.SetTrigger("Moving");
+        myAnim.SetBool("Moving", true);
+        print("Move animation");
     }
        
     void IdleAnimation()
     {
-        //Debug.Log("Idle");
+        Debug.Log("Idle");
 
         myAnim.SetBool("Moving", false);
         myAnim.SetBool("Idle", true);
@@ -49,10 +54,26 @@ public class CharacterView : MonoBehaviour
         myAnim.SetTrigger("NetShoot");
     }
 
-    void StopAnimation()
+    void NetCaughtAnimation()
     {
         myAnim.SetBool("Moving", false);
         myAnim.SetBool("Idle", false);
-        myAnim.SetTrigger("Stop");
+        myAnim.SetTrigger("NetCaught");
+    }
+
+    void ShiftAnimation()
+    {
+       // print("SHIFT ANIM");
+        myAnim.SetBool("Moving", false);
+        myAnim.SetBool("Idle", false);
+        myAnim.SetTrigger("Shift");
+    }
+
+    void HookedAnimation()
+    {
+        print("HOOKED ANIM");
+        myAnim.SetBool("Moving", false);
+        myAnim.SetBool("Idle", false);
+        myAnim.SetTrigger("Hooked");
     }
 }
