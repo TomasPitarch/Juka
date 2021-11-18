@@ -41,29 +41,22 @@ public class NetSkill : SkillShoot
     }
     public override void CastSkillShoot(Vector3 point)
     {
-
-        print("netskill/CastSkillShoot");
         if (CanSkill())
         {
-            print("netskill/por llamara al skillshoot_SVRequest");
+
             SkillShoot_SVRequest(point);
             CoolDownTimer();
         }
 
-      
-
     }
     void SkillShoot_SVRequest(Vector3 point)
     {
-        print("netskill/SkillShoot_SVRequest");
         photonView.RPC("SkillingNet", RpcTarget.MasterClient, point);
     }
 
     [PunRPC]
     void SkillingNet(Vector3 point)
     {
-        print("netskill/SkillingNet(dberia ser solo en master client)");
-
         SpawnNet();
 
         point.y = skillSpawnPoint.transform.position.y;
@@ -74,7 +67,6 @@ public class NetSkill : SkillShoot
 
     void SpawnNet()
     {
-        print("netskill/SpawnNet");
         //HookHeadCreation and event suscription//
         net = PhotonNetwork.Instantiate("Net",Vector3.zero,Quaternion.identity).GetComponent<Net>();
         net.OnObjectCollision += NetColitionHanlder;

@@ -33,15 +33,12 @@ public class M : MonoBehaviourPun
 
     [SerializeField]
     NavMeshAgent myNavMesh;
-   
 
     [SerializeField]
     HookSkill hookSkill;
-   
 
     [SerializeField]
     NetSkill netSkill;
-   
 
     [SerializeField]
     ShiftSkill shiftSkill;
@@ -50,9 +47,6 @@ public class M : MonoBehaviourPun
     RefreshSkill refreshSkill;
 
     GoldComponent myGold;
-
-    [SerializeField]
-    GameObject netStatusPrefab;
 
     [SerializeField]
     GameObject _cursorArrowPrefab;
@@ -80,24 +74,21 @@ public class M : MonoBehaviourPun
 
         OnMove += ShowMovementCursor;
 
-        NormalStatus();
+        NormalActionStatus();
     }
 
-
     // States//
-    void NormalStatus()
+    void NormalActionStatus()
     {
-
         _canMove = true;
         _canSkill1 = true;
         _canSkill2 = true;
         _canSkill3 = true;
         OnIdle();
 
-
         GetComponent<Rigidbody>().detectCollisions = true;
     }
-    void NetStatus()
+    void NetActionStatus()
     {
         myNavMesh.ResetPath();
         OnTrapped();
@@ -106,8 +97,9 @@ public class M : MonoBehaviourPun
         _canSkill2 = false;
         _canSkill3 = false;
     }
-    void HookedStatus()
+    void HookedActionStatus()
     {
+        print("11-hooked action status, reseteo movilidad en navmesh y desactivo los skilles y movimiento");
         myNavMesh.ResetPath();
         OnHooked();
         _canMove = false;
@@ -115,7 +107,7 @@ public class M : MonoBehaviourPun
         _canSkill2 = false;
         _canSkill3 = false;
     }
-    void ShiftStatus()
+    void ShiftActionStatus()
     {
         myNavMesh.ResetPath();
         _canMove = false;
@@ -123,36 +115,147 @@ public class M : MonoBehaviourPun
         _canSkill2 = false;
         _canSkill3 = false;
 
-        GetComponent<Rigidbody>().detectCollisions = false;
+        
     }
-    void DieStatus()
+   
+    void DieActionStatus()
     {
 
-        print("Die Status");
-
+        print("14-Die status");
         myNavMesh.ResetPath();
         _canMove = false;
         _canSkill1 = false;
         _canSkill2 = false;
         _canSkill3 = false;
 
-        GetComponent<Rigidbody>().detectCollisions = false;
-    }
-    private void BackToNormality()
-    {
-        NormalStatus();
     }
     void GhostForm()
     {
         OnGhostStart();
-        ShiftStatus();
+        ShiftActionStatus();
     }
     void GhostFormEnd()
     {
         OnGhostEnd();
-        NormalStatus();
+        NormalActionStatus();
     }
 
+    //----------RPCs------------//
+    [PunRPC]
+    public void Hooked(int[] IDs)
+    {
+        print("9-Me hookearon");
+        var HookID = IDs[0];
+        var hookCasterID = IDs[1];
+
+
+        if (photonView.ViewID == hookCasterID)
+        {
+            print("me autohookie, me saco del gancho");
+            var hook = PhotonView.Find(HookID).GetComponent<Hook>();
+            hook.photonView.RPC("RemoveCharacterFromHook", RpcTarget.MasterClient);
+            return;
+        }
+
+        var CasterChar = PhotonView.Find(hookCasterID);
+        var CasterTeam = CasterChar.GetComponent<M>().myTeam;
+
+
+        if (CasterTeam != myTeam)
+        {
+            print("10-Me hookeo un enemigo");
+            
+            Die(hookCasterID);
+
+            //Como muero me saco del gancho//
+            var hook = PhotonView.Find(HookID).GetComponent<Hook>();
+            hook.photonView.RPC("RemoveCharacterFromHook", RpcTarget.MasterClient);
+        }
+        else
+        {
+            print("10-Me Hookeo un aliado");
+            Catched(HookID);
+        }
+    }
+    [PunRPC]
+    void BackToNormality()
+    {
+        NormalActionStatus();
+    }
+    [PunRPC]
+    void GetGoldForKill(int goldReward)
+    {
+        myGold.AddGold(goldReward);
+    }
+    [PunRPC]
+    public void CatchedByNet(int CasterID)
+    {
+        
+        //Animacion de la Red//
+        var net = PhotonNetwork.Instantiate("NetStatus Team 1", transform.position, Quaternion.identity).GetComponent<NetStatus>();
+        net.OnNetReleased += NormalActionStatus;
+        NetActionStatus();
+    }
+    [PunRPC]
+    void HookedMove(Vector3 distance)
+    {
+        print("hooked move");
+        transform.position += distance;
+    }
+
+    //-------Server RPCs-------//
+    [PunRPC]
+    void ServerCatched(int HookID)
+    {
+        print("13-le llega al servidor que fui atrapado, y le avisa quien atrapo, y se suscribe");
+
+        var hook = PhotonView.Find(HookID).GetComponent<Hook>();
+        hook.OnHooksEnd += BackOwnerNormality;
+    }
+    [PunRPC]
+    public void ServerDie()
+    {
+        print("12-Le llega al servidor que murio");
+        ServerDieStatus();
+    }
+    [PunRPC]
+    public void ServerRespawn()
+    {
+        print("19-Le llega al servidor ya respawnie asique puedo volver a colisionar");
+        ServerRespawnStatus();
+    }
+
+    //------Server Requests-----//
+    private void BringGoldForKill_Request(int hookCasterID)
+    {
+        ServerManager.Instance.photonView.RPC("GoldToKiller", RpcTarget.MasterClient, hookCasterID);
+    }
+
+    //------Server-----//
+    void ServerDieStatus()
+    {
+        print("13-Se puso para que no colisione");
+        GetComponent<Rigidbody>().detectCollisions = false;
+    }
+    void ServerRespawnStatus()
+    {
+        print("20-Se puso para que  colisione");
+        GetComponent<Rigidbody>().detectCollisions = true;
+    }
+    void BackOwnerNormality()
+    {
+        var owner = ServerManager.Instance.GetPlayer(photonView.ViewID);
+        photonView.RPC("BackToNormality", owner);
+    }
+
+    //-------ASync-------//
+    async void Respawining()
+    {
+
+        print("15-Me pogno a respawnear en 5 segundos");
+        await Task.Delay(5000);
+        Respawn();
+    }
     //Actions//
     public void Move(Vector3 destination)
     {
@@ -165,14 +268,12 @@ public class M : MonoBehaviourPun
         }
        
     }
-
     void ShowMovementCursor(Vector3 destination)
     {
         cursorAnimation.transform.position = destination;
         cursorAnimation.Rewind();
         cursorAnimation.Play();
     }
-
     public void StopMove()
     {
         //myNavMesh.isStopped=true;
@@ -184,13 +285,13 @@ public class M : MonoBehaviourPun
     {
         if (_canSkill1 && hookSkill.CanSkill())
         {
+            print("1- el character Skillea el hook");
             myNavMesh.ResetPath();
             TurnToCastDirection(point);
             hookSkill.CastSkillShoot(point);
 
             OnHookShoot();
         }
-
     }
     public void Skill2(Vector3 point)
     {
@@ -224,131 +325,41 @@ public class M : MonoBehaviourPun
                                                       point.z);
         transform.LookAt(NormalizedObjectivePosition);
     }
-
-    [PunRPC]
-    public void Hooked(int[] IDs)
-    {
-        StopMove();
-
-        var HookID = IDs[0];
-        var hookCasterID = IDs[1];
-
-
-
-        var Hook_PV = PhotonView.Find(HookID);
-
-
-        if (Hook_PV == null)
-        {
-            print("No encontre el componente photonview del hook por el ID");
-            return;
-        }
-
-
-        var Hook = Hook_PV.gameObject.GetComponent<Hook>();
-
-        if (Hook==null)
-        {
-            print("No encontre el componente hook");
-            return;
-        }
-
-        if(Hook.CharacterHooked==null)
-        {
-            print("el hook no tiene a nadie en character hooked");
-        }
-
-        if (photonView.ViewID == hookCasterID)
-        {
-            print("Me autohookie, no hago nada");
-            NormalStatus();
-            return;
-        }
-
-       
-
-        var CasterChar = PhotonView.Find(hookCasterID);
-        var CasterTeam = CasterChar.GetComponent<M>().myTeam;
-
-
-        if (CasterTeam != myTeam)
-        {
-            Die(hookCasterID);
-        }
-        else
-        {
-            print("Me Hookeo un aliado");
-            Catched(Hook);
-        }
-    }
     void Die(int killerID)
     {
+        print("11-Muero y le aviso al server que cambie su estatus a no colisionable");
         photonView.RPC("ServerDie", RpcTarget.MasterClient);
+
+        print("13-Me pongo en estado de muerte y no puedo ejecutar acciones");
+        DieActionStatus();
         OnDie();
 
         ServerManager.Instance.photonView.RPC("CharacterDie_Request", RpcTarget.MasterClient, photonView.ViewID);
         BringGoldForKill_Request(killerID);
         Respawining();
     }
-    private void BringGoldForKill_Request(int hookCasterID)
+    void Catched(int HookID)
     {
-        ServerManager.Instance.photonView.RPC("GoldToKiller",RpcTarget.MasterClient,hookCasterID);
-    }
+        print("11-Catched");
+        HookedActionStatus();
+        print("12-le aviso al servidor que fui atrapado");
 
-    [PunRPC]
-    void GetGoldForKill(int goldReward)
-    {
-        myGold.AddGold(goldReward);
-    }
-    private void Catched(Hook hook)
-    {
-        print("Catched");
-        HookedStatus();
-        hook.OnHooksEnd += BackToNormality;
-    }
-
-    [PunRPC]
-    public void ServerDie()
-    {
-        ShiftStatus();
-    }
-    [PunRPC]
-    public void ServerRespawn()
-    {
-        NormalStatus();
-    }
-    async void Respawining()
-    {
-        await Task.Delay(5000);
-        Respawn();
-    }
-
-    [PunRPC]
-    public void CatchedByNet(int CasterID)
-    {
-        //print("Soy el atrapado");
-
-        if (photonView.ViewID == CasterID)
-        {
-            //print("Me pegue la red, no hago nada");
-            return;
-        }
-        ///////////////////////////
-        var net = PhotonNetwork.Instantiate("NetStatus Team 1",transform.position,Quaternion.identity).GetComponent<NetStatus>();
-        net.OnNetReleased += NormalStatus;
-        NetStatus();
+        photonView.RPC("ServerCatched", RpcTarget.MasterClient,HookID);
         
     }
-
     public void Respawn()
     {
+
+        print("16-Respawneo");
         gameObject.SetActive(true);
         var respawnPosition= ServerManager.Instance.ClientManager.GetRandomReSpawnPoint(myTeam).position;
         myNavMesh.Warp(respawnPosition);
         
         OnRespawn();
 
-        NormalStatus();
+        NormalActionStatus();
+
+        print("17-Le aviso al servidor que respawnieo y puede volver a colisionar");
         photonView.RPC("ServerRespawn", RpcTarget.MasterClient);
     }
    

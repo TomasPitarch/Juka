@@ -29,13 +29,11 @@ public class CharacterView : MonoBehaviour
         
         myAnim.SetBool("Idle", false);            
         myAnim.SetBool("Moving", true);
-        print("Move animation");
+        //print("Move animation");
     }
        
     void IdleAnimation()
     {
-        Debug.Log("Idle");
-
         myAnim.SetBool("Moving", false);
         myAnim.SetBool("Idle", true);
     }

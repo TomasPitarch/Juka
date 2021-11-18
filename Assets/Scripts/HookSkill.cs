@@ -33,6 +33,8 @@ public class HookSkill : SkillShoot
     {
         if (CanSkill())
         {
+
+            print("2-El skill skillea");
             SkillShoot_SVRequest(point);
             CoolDownTimer();
         }
@@ -40,22 +42,26 @@ public class HookSkill : SkillShoot
     }
     void SkillShoot_SVRequest(Vector3 point)
     {
+
+        print("3-Hago un request al server");
         photonView.RPC("SkillingHook", RpcTarget.MasterClient,point);
     }
 
     [PunRPC]
     void SkillingHook(Vector3 point)
     {
-     
-            var hook = SpawnHook();
+
+        print("4-Server skillea el hook");
+        var hook = SpawnHook();
            
-            var SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
-            hook.Init(skillSpawnPoint, data, SkillDirection, photonView.ViewID);
+        var SkillDirection = (point - skillSpawnPoint.transform.position).normalized;
+        hook.Init(skillSpawnPoint, data, SkillDirection, photonView.ViewID);
         
     }
     
     Hook SpawnHook()
     {
+        print("5-Spawnea el hook");
         //HookHeadCreation and event suscription//
         var newHook = PhotonNetwork.Instantiate("Hook", Vector3.zero, Quaternion.identity).GetComponent<Hook>();
         return newHook;

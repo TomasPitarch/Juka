@@ -42,6 +42,11 @@ PrefabInstance:
       propertyPath: myTeam
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -1791384401011190909, guid: fc5cfaecd04f62b408d0e1e4fee64dfd,
+        type: 3}
+      propertyPath: myTeam
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3919964441186710024, guid: fc5cfaecd04f62b408d0e1e4fee64dfd,
         type: 3}
       propertyPath: m_textInfo.characterCount

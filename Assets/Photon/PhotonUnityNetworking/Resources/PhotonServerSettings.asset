@@ -82,6 +82,9 @@ MonoBehaviour:
   - Die
   - ServerDie
   - ServerRespawn
+  - BackToNormality
+  - HookedMove
+  - ServerCatched
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

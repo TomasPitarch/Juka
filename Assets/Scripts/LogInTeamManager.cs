@@ -25,9 +25,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
     List<Player> PlayersToSetTeam;
 
     [SerializeField]
-    int maxPlayerA;
-    [SerializeField]
-    int maxPlayerB;
+    GameData data;
 
     [SerializeField]
     Button startButton;
@@ -94,7 +92,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
 
     private void StartCheck()
     {
-        if (playersReady == maxPlayerA + maxPlayerB && WaitTeam.Count==0)
+        if (playersReady == data.MaxPlayersTeamA + data.MaxPlayersTeamB && WaitTeam.Count==0)
         {
             startButton.interactable=true;
         }
@@ -145,7 +143,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void SetPlayerOnTeamA(Player player)
     {
-        if (maxPlayerA ==TeamA.Count)
+        if (data.MaxPlayersTeamA == TeamA.Count)
         {
             return;
         }
@@ -175,7 +173,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void SetPlayerOnTeamB(Player player)
     {
-        if (maxPlayerB == TeamB.Count)
+        if (data.MaxPlayersTeamB == TeamB.Count)
         {
             return;
         }

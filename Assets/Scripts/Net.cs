@@ -8,10 +8,7 @@ using UnityEngine;
 public class Net : MonoBehaviourPun
 {
     
-    public event Action OnObjectCollision;
-
-    [SerializeField]
-    GameObject NetStatusPrefab;
+    public event Action OnObjectCollision =delegate{ };
 
     [SerializeField]
     float rotationSpeed;
@@ -27,12 +24,22 @@ public class Net : MonoBehaviourPun
     // Update is called once per frame
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
         transform.Rotate(Vector3.up,rotationSpeed*Time.deltaTime);
         transform.position += skillDirection * Time.deltaTime * skillSpeed;
     }
 
     public void Init(Vector3 position, Vector3 direction,float speed,float newLifeTime,int CasterID)
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
         SetDirectionAndSpeed(direction, speed);
         SetPosition(position);
         SetLifeTime(newLifeTime);
@@ -42,7 +49,7 @@ public class Net : MonoBehaviourPun
         SkillLifeTime();
     }
 
-    private void SetLifeTime(float newLifeTime)
+    void SetLifeTime(float newLifeTime)
     {
         lifeTime = newLifeTime;
     }

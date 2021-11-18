@@ -12,10 +12,6 @@ public class Hook : MonoBehaviourPun
     public event Action<Hook> OnHooksDestroy = delegate { };
 
     public M CharacterHooked;
-    //public Team team;
-
-   
-    //LineRenderer myLine;
 
     bool _hookCollided;
 
@@ -28,40 +24,37 @@ public class Hook : MonoBehaviourPun
     float _skillRange;
     float _skillSpeed;
     int CasterID;
-    /// </summary>
+   
 
-    private void Await()
+    private void Awake()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
         _hookCollided = false;
     }
     public void Init(GameObject SpawnPoint, HookSkill_SO data,Vector3 dir,int CasterPv_Id)
     {
+        if(!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
+        print("6-Inicializo el hook");
 
         CasterID = CasterPv_Id;
 
         _skillRange = data._skillRange;
         _skillSpeed = data._skillSpeed;
-
-        //LineRendererHook creation and config//
-        //myLine = gameObject.AddComponent(typeof(LineRenderer)) as LineRenderer;
-        //myLine.SetColors(Color.red, Color.red);
-        //myLine.SetWidth(0.2f, 0.2f);
-        //myLine.SetPosition(0, Vector3.zero);
-        //myLine.SetPosition(1, Vector3.zero);
-        //myLine.material = data.myMaterial;
-
-      
-
         SkillDirection = dir;
         skillSpawnPoint = SpawnPoint;
-
-
 
         HookBehaviour();
     }
     async void HookBehaviour()
     {
-        if (!photonView.IsMine)
+        if (!PhotonNetwork.IsMasterClient)
         {
             return;
         }
@@ -76,9 +69,6 @@ public class Hook : MonoBehaviourPun
             var distanceToMove = SkillDirection * _skillSpeed * Time.deltaTime;
             Move(distanceToMove);
             distance = (HookInitialPosition - transform.position).magnitude;
-
-            //myLine.SetPosition(0, skillSpawnPoint.transform.position);
-            //myLine.SetPosition(1, transform.position);
 
             await Task.Yield();
         }
@@ -95,27 +85,33 @@ public class Hook : MonoBehaviourPun
             Move(distanceToMove);
             distance = (HookInitialPosition - transform.position).magnitude;
 
-            //myLine.SetPosition(0, skillSpawnPoint.transform.position);
-            //myLine.SetPosition(1, transform.position);
-
             await Task.Yield();
         }
 
         HookEnds();
 
     }
-    public void HookHeadPosition(Vector3 FromActivePosition)
+    void HookHeadPosition(Vector3 FromActivePosition)
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
         transform.position = FromActivePosition;
     }
-    public void HookEnds()
+    void HookEnds()
     {
+        if (!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+        print("liquidamos el hook");
         CharacterHooked = null;
         OnHooksEnd();
         OnHooksDestroy(this);
         PhotonNetwork.Destroy(photonView);
     }
-    private void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if (!PhotonNetwork.IsMasterClient)
         {
@@ -125,27 +121,47 @@ public class Hook : MonoBehaviourPun
         if (other.gameObject.tag == "Character" && !_hookCollided)
         {
 
+                print("7-el hook choca contra un player");
                 CharacterHooked = other.gameObject.GetComponent<M>();
                 var charPV_ID = CharacterHooked.photonView.ViewID;
                 var playerHooked = ServerManager.Instance.GetPlayer(charPV_ID);
                 var hookPV_ID = photonView.ViewID;
 
                 int[] IDs = new int[] {hookPV_ID,CasterID};
+
+                print("8-el hook del server le manda un rpc al cliente del character hookeado");
                 CharacterHooked.photonView.RPC("Hooked", playerHooked, IDs);
 
+                if (CasterID!=charPV_ID)
+                {
                 _hookCollided = true;
+                }
+               
+           
 
                 //OnObjectCollision();
         }
         
     }
-    public void Move(Vector3 distanceToMove)
+
+    [PunRPC]
+    void RemoveCharacterFromHook()
     {
+        CharacterHooked = null;
+    }
+    void Move(Vector3 distanceToMove)
+    {
+        if(!PhotonNetwork.IsMasterClient)
+        {
+            return;
+        }
+
         transform.position += distanceToMove;
 
-        if(CharacterHooked)
+        if(CharacterHooked != null)
         {
-            CharacterHooked.transform.position += distanceToMove;
+            var playerHooked= ServerManager.Instance.GetPlayer(CharacterHooked.photonView.ViewID);
+            CharacterHooked.photonView.RPC("HookedMove",playerHooked, distanceToMove);
         }
     }
     

@@ -445,8 +445,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eff3e2ef46491b43838c945b23dcc92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxPlayerA: 1
-  maxPlayerB: 1
+  data: {fileID: 11400000, guid: b2c8a4d1bc63924439f45d3d236a25cd, type: 2}
   startButton: {fileID: 3469299264777705914}
   readyToggle: {fileID: 3469299263754554932}
 --- !u!114 &3469299263489430722
@@ -1152,7 +1151,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
