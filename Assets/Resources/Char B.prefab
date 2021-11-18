@@ -7,6 +7,26 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -8684248573307782902, guid: fc5cfaecd04f62b408d0e1e4fee64dfd,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: -8684248573307782902, guid: fc5cfaecd04f62b408d0e1e4fee64dfd,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[4].SynchronizeType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8684248573307782902, guid: fc5cfaecd04f62b408d0e1e4fee64dfd,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[5].SynchronizeType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8684248573307782902, guid: fc5cfaecd04f62b408d0e1e4fee64dfd,
+        type: 3}
+      propertyPath: m_SynchronizeParameters.Array.data[6].SynchronizeType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -6538285852315029348, guid: fc5cfaecd04f62b408d0e1e4fee64dfd,
         type: 3}
       propertyPath: sceneViewId
