@@ -16,10 +16,12 @@ public class CharacterView : MonoBehaviour
         myModel.OnMove += MoveAnimation;
         myModel.OnIdle += IdleAnimation;
         myModel.OnTrapped += NetCaughtAnimation;
-        myModel.OnHooked += HookedAnimation;
+        myModel.OnHooked += FriendlyHookedAnimation;
         myModel.OnHookShoot += HookAnimation;
         myModel.OnNetShoot += NetAnimation;
         myModel.OnGhostStart += ShiftAnimation;
+        myModel.OnDie += DieAnimation;
+        myModel.OnRespawn += RespawnAnimation;
        
 
     }
@@ -67,11 +69,25 @@ public class CharacterView : MonoBehaviour
         myAnim.SetTrigger("Shift");
     }
 
-    void HookedAnimation()
+    void FriendlyHookedAnimation()
     {
         print("HOOKED ANIM");
         myAnim.SetBool("Moving", false);
         myAnim.SetBool("Idle", false);
-        myAnim.SetTrigger("Hooked");
+        myAnim.SetTrigger("FriendlyHooked");
+    }
+    void DieAnimation()
+    {
+        print("DIE ANIM");
+        myAnim.SetBool("Moving", false);
+        myAnim.SetBool("Idle", false);
+        myAnim.SetTrigger("Die");
+    }
+    void RespawnAnimation()
+    {
+        print("Respawn ANIM");
+        myAnim.SetBool("Moving", false);
+        myAnim.SetBool("Idle", false);
+        myAnim.SetTrigger("Respawn");
     }
 }
