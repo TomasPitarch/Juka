@@ -28,7 +28,7 @@ public class CharacterView : MonoBehaviour
 
     void MoveAnimation(Vector3 nada)
     {
-                        
+        myAnim.ResetTrigger("Moving");             
         myAnim.SetTrigger("Moving");
         //print("Move animation");
     }
