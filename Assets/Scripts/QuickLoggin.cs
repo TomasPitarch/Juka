@@ -25,7 +25,9 @@ public class QuickLoggin : MonoBehaviourPunCallbacks
     }
     private void Update()
     {
-        if (textName.text != "" && _joinedLobby)
+        var nicknameText = textName.text;
+       
+        if ((!string.IsNullOrEmpty(nicknameText) && !string.IsNullOrWhiteSpace(nicknameText)) && _joinedLobby)
         {
             connectButton.interactable = true;
         }
