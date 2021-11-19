@@ -19,14 +19,6 @@ public class V : MonoBehaviourPun
     void Start()
     {
         Model = GetComponent<M>();
-
-        Model.OnGhostEnd += GhostFormEndRPC;
-        Model.OnGhostStart += GhostFormStartRPC;
-
-        Model.OnDie += GhostFormStartRPC;
-        Model.OnRespawn += GhostFormEndRPC;
-
-
         if(photonView.IsMine)
         {
             photonView.RPC("SetNickNameOnNet",RpcTarget.All, PhotonNetwork.LocalPlayer.NickName);
@@ -41,30 +33,15 @@ public class V : MonoBehaviourPun
 
     private void Update()
     {
-        canvas.transform.LookAt(new Vector3(transform.position.x,
-                                            transform.position.y,
-                                            Camera.main.transform.position.z*-1));
+        //canvas.transform.LookAt(new Vector3(transform.position.x,
+        //                                    transform.position.y,
+        //                                    Camera.main.transform.position.z*-1));
+
+        Vector3 v = Camera.main.transform.position - transform.position;
+        v.x = v.z = 0.0f;
+        canvas.transform.LookAt(Camera.main.transform.position - v);
+        canvas.transform.Rotate(0, 180, 0);
     }
 
-
-    [PunRPC]
-    void GhostFormStart()
-    {
-        GetComponent<MeshRenderer>().enabled = false;
-    }
-
-    [PunRPC]
-    void GhostFormEnd()
-    {
-        GetComponent<MeshRenderer>().enabled = true;
-    }
-
-    void GhostFormStartRPC()
-    {
-        photonView.RPC("GhostFormStart",RpcTarget.All);
-    }
-    void GhostFormEndRPC()
-    {
-        photonView.RPC("GhostFormEnd", RpcTarget.All);
-    }
+   
 }
