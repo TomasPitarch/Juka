@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: GameData_SO
   m_EditorClassIdentifier: 
   MaxPlayersTeamA: 1
-  MaxPlayersTeamB: 0
+  MaxPlayersTeamB: 1
