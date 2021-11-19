@@ -28,66 +28,58 @@ public class CharacterView : MonoBehaviour
 
     void MoveAnimation(Vector3 nada)
     {
-        
-        myAnim.SetBool("Idle", false);            
-        myAnim.SetBool("Moving", true);
+                        
+        myAnim.SetTrigger("Moving");
         //print("Move animation");
     }
        
     void IdleAnimation()
     {
-        myAnim.SetBool("Moving", false);
-        myAnim.SetBool("Idle", true);
+        
+        myAnim.SetTrigger("Idle");
     }
 
     void HookAnimation()
     {
-        myAnim.SetBool("Moving", false);
-        myAnim.SetBool("Idle", false);
+        
         myAnim.SetTrigger("HookShoot");
 
     }
     void NetAnimation()
     {
-        myAnim.SetBool("Moving", false);
-        myAnim.SetBool("Idle", false);
+        
         myAnim.SetTrigger("NetShoot");
     }
 
     void NetCaughtAnimation()
     {
-        myAnim.SetBool("Moving", false);
-        myAnim.SetBool("Idle", false);
+        
         myAnim.SetTrigger("NetCaught");
     }
 
     void ShiftAnimation()
     {
        // print("SHIFT ANIM");
-        myAnim.SetBool("Moving", false);
-        myAnim.SetBool("Idle", false);
+        
         myAnim.SetTrigger("Shift");
     }
 
     void FriendlyHookedAnimation()
     {
         print("HOOKED ANIM");
-        myAnim.SetBool("Moving", false);
-        myAnim.SetBool("Idle", false);
+     
         myAnim.SetTrigger("FriendlyHooked");
     }
     void DieAnimation()
     {
         print("DIE ANIM");
-        myAnim.SetBool("Moving", false);
-        myAnim.SetBool("Idle", false);
+        
         myAnim.SetTrigger("Die");
     }
     void RespawnAnimation()
     {
         print("Respawn ANIM");
-        myAnim.SetBool("Moving", false);
-        myAnim.SetBool("Idle", false);
+       
         myAnim.SetTrigger("Respawn");
     }
 }
