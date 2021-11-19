@@ -245,28 +245,21 @@ public class M : MonoBehaviourPun
     async void WalkingToDestiny()
     {
         movementChecking = true;
-
-        while(myNavMesh.pathPending)
+       
+        while (myNavMesh.pathPending)
         {
             print("pathpending");
             await Task.Yield();
         }
 
-        while (_canMove && myNavMesh.remainingDistance<0.2f && myNavMesh.hasPath)
+        while (myNavMesh.remainingDistance>0.1f && myNavMesh.hasPath)
         {
-            print("distance" + myNavMesh.remainingDistance);
-           
             await Task.Yield();
         }
-
-        print("_canMove" + _canMove);
-
-        print("pathStatus" + myNavMesh.pathStatus);
-
-        print("myNavMesh.hasPath" + myNavMesh.hasPath);
-
-        movementChecking = false;
         print("se termino el checkeo");
+
+        OnIdle();
+        movementChecking = false;
     }
     //Actions//
     public void Move(Vector3 destination)

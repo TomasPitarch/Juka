@@ -19,6 +19,7 @@ public class V : MonoBehaviourPun
     void Start()
     {
         Model = GetComponent<M>();
+
         if(photonView.IsMine)
         {
             photonView.RPC("SetNickNameOnNet",RpcTarget.All, PhotonNetwork.LocalPlayer.NickName);
