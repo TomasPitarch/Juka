@@ -16,11 +16,23 @@ public class QuickLoggin : MonoBehaviourPunCallbacks
     [SerializeField]
     Button connectButton;
 
+    bool _joinedLobby = false;  
 
     void Start()
     {
         connectButton.interactable = false;
         PhotonNetwork.ConnectUsingSettings();
+    }
+    private void Update()
+    {
+        if (textName.text != "" && _joinedLobby)
+        {
+            connectButton.interactable = true;
+        }
+        else
+        {
+            connectButton.interactable = false;
+        }
     }
     public override void OnConnectedToMaster()
     {
@@ -28,7 +40,7 @@ public class QuickLoggin : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedLobby()
     {
-        connectButton.interactable = true;
+        _joinedLobby = true;  
     }
     public override void OnCreatedRoom()
     {
