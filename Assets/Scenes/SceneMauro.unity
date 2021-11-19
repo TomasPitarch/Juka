@@ -473,6 +473,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Scenery
       objectReference: {fileID: 0}
+    - target: {fileID: 518464257945260306, guid: 4fddfd81ed8dc5546a918c62eb0f46c7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6020374238046674100, guid: 4fddfd81ed8dc5546a918c62eb0f46c7,
         type: 3}
       propertyPath: m_LocalPosition.x

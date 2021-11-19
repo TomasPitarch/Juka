@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine;
+using System;
 
 public class UI_View : MonoBehaviour
 {
@@ -22,8 +23,33 @@ public class UI_View : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI goldAmount;
 
-    
+    [SerializeField]
+    Image mic;
 
+
+    [SerializeField]
+    List<Image> micSprites;
+
+    [SerializeField]
+    C controller;
+
+    private void Start()
+    {
+        controller.OnRecorder += SetMicImage;
+        mic = micSprites[0];
+    }
+
+    private void SetMicImage(bool status)
+    {
+       if(status)
+       {
+            mic = micSprites[1];
+        }
+       else
+       {
+            mic = micSprites[1];
+        }
+    }
 
     public void SetHandlers(M model)
     {

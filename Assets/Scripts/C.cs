@@ -26,6 +26,7 @@ public class C : MonoBehaviourPunCallbacks
     [SerializeField]
     Recorder _recorder;
 
+    public event Action<bool> OnRecorder=delegate { };
    
 
     private void Awake()
@@ -132,10 +133,12 @@ public class C : MonoBehaviourPunCallbacks
             {
 
                 _recorder.TransmitEnabled = true;
+                OnRecorder(true);
             }
             else
             {
                 _recorder.TransmitEnabled = false;
+                OnRecorder(false);
             }
         }
 

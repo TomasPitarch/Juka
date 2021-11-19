@@ -148,38 +148,6 @@ public class M : MonoBehaviourPun
     }
 
     //----------RPCs------------//
-    //[PunRPC]
-    //public void Hooked(int[] IDs)
-    //{
-    //    var HookID = IDs[0];
-    //    var hookCasterID = IDs[1];
-
-
-    //    if (photonView.ViewID == hookCasterID)
-    //    {
-    //        var hook = PhotonView.Find(HookID).GetComponent<Hook>();
-    //        hook.photonView.RPC("RemoveCharacterFromHook", RpcTarget.MasterClient);
-    //        return;
-    //    }
-
-    //    var CasterChar = PhotonView.Find(hookCasterID);
-    //    var CasterTeam = CasterChar.GetComponent<M>().myTeam;
-
-
-    //    if (CasterTeam != myTeam)
-    //    {
-            
-    //        Die(hookCasterID);
-
-    //        //Como muero me saco del gancho//
-    //        var hook = PhotonView.Find(HookID).GetComponent<Hook>();
-    //        hook.photonView.RPC("RemoveCharacterFromHook", RpcTarget.MasterClient);
-    //    }
-    //    else
-    //    {
-    //        Catched(HookID);
-    //    }
-    //}
 
     [PunRPC]
     void HookedByEnemy(int hookCasterID)
@@ -191,7 +159,6 @@ public class M : MonoBehaviourPun
     {
         Catched(HookID);
     }
-
     [PunRPC]
     void BackToNormality()
     {
