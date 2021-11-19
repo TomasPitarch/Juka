@@ -21,13 +21,13 @@ public class HookSkill : SkillShoot
     
     private void Start()
     {
-        _cooldown = false;
+        _onCooldown = false;
         _cdTime = data._coolDownTime;
        
     }
     public bool CanSkill()
     {
-        return !_cooldown;
+        return !_onCooldown;
     }
     public override void CastSkillShoot(Vector3 point)
     {

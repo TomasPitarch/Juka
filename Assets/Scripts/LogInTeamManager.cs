@@ -237,6 +237,7 @@ public class LogInTeamManager : MonoBehaviourPunCallbacks
         {
             await Task.Yield();
         }
+        PhotonNetwork.CurrentRoom.IsOpen = false;
         photonView.RPC("StartGamePlay", RpcTarget.All);
     }
 

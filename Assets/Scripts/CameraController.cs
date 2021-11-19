@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -14,7 +15,7 @@ public class CameraController : MonoBehaviour
     [SerializeField]
     M Character;
 
-    bool _cameraLock = true;
+    bool _cameraLock = false;
 
 
     Vector3 AuxiliarPos;
@@ -78,9 +79,11 @@ public class CameraController : MonoBehaviour
         AuxiliarPos.x = Character.transform.position.x;
         AuxiliarPos.z = Character.transform.position.z - 8f;
     }
+   
     public void SetCharacter(M characterToSet)
     {
         Character = characterToSet;
+        Character.OnRespawn += CameraFollowPlayerBehaviour;
         CameraFollowPlayerBehaviour();
     }
     

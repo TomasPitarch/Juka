@@ -9,7 +9,7 @@ using UnityEngine;
 public class Skill : MonoBehaviourPun
 {
     public event Action<float,float> OnCoolDownUpdate;
-    protected bool _cooldown;
+    protected bool _onCooldown;
     protected float _cdTime;
     protected bool _tokenCoolDownTimer = false;
 
@@ -17,7 +17,7 @@ public class Skill : MonoBehaviourPun
     protected async void CoolDownTimer()
     {
 
-        _cooldown = true;
+        _onCooldown = true;
 
 
         var timer = Task.Delay((int)_cdTime * 1000);
@@ -31,18 +31,20 @@ public class Skill : MonoBehaviourPun
             {
                 print("token activado");
                 _tokenCoolDownTimer = false;
+                _onCooldown = false;
 
                 OnCoolDownUpdate(_cdTime,_cdTime);
 
                 return;
             }
-
+            print("despues de preguntar por el token");
             OnCoolDownUpdate(amount, _cdTime);
             await Task.Yield();
         }
 
+        print("afuera del while del token");
         OnCoolDownUpdate(_cdTime, _cdTime);
 
-        _cooldown = false;
+        _onCooldown = false;
     }
 }

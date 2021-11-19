@@ -14,7 +14,7 @@ public class RefreshSkill : Skill
     }
     public void Cast(GoldComponent gold)
     {
-        if (!_cooldown && gold.CanPay(skillCost))
+        if (!_onCooldown && gold.CanPay(skillCost))
         {
             gold.Pay(skillCost);
             Rearm();

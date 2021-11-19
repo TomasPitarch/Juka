@@ -80,7 +80,7 @@ public class Net : MonoBehaviourPun
             //int[] IDs = new int[] { charPV_ID, CasterID };
             if(CharacterTraped.photonView.ViewID==CasterID)
             {
-                print("la red le pego al dueño");
+
                 return;
             }
             else if(CharacterTraped.myTeam==Caster.myTeam)

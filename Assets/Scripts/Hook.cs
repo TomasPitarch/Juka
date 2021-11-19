@@ -41,7 +41,7 @@ public class Hook : MonoBehaviourPun
             return;
         }
 
-        print("6-Inicializo el hook");
+
 
         CasterID = CasterPv_Id;
 
@@ -105,7 +105,7 @@ public class Hook : MonoBehaviourPun
         {
             return;
         }
-        print("liquidamos el hook");
+
         CharacterHooked = null;
         OnHooksEnd();
         OnHooksDestroy(this);
@@ -143,7 +143,7 @@ public class Hook : MonoBehaviourPun
                 }
                 else
                 {
-                    print("enemigo, tengo que matarlo");
+
                     CharacterHooked.photonView.RPC("HookedByEnemy", playerHooked, CasterID);
                     CharacterHooked = null;
                     _hookCollided = true;

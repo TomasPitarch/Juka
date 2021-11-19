@@ -20,19 +20,16 @@ public class ShiftSkill : Skill, IReseteable
     }
     public void CastShift()
     {
-        if(_cooldown)
+        if(_onCooldown)
         {
-            print("skill en cd");
+            print("skill shift en cd");
             return;
         }
 
-        photonView.RPC("ShiftBehaviour", RpcTarget.MasterClient);
         ShiftBehaviour();
-
         CoolDownTimer();
     }
-   
-    [PunRPC]
+
     async void ShiftBehaviour()
     {
         OnShiftStart();
@@ -42,7 +39,7 @@ public class ShiftSkill : Skill, IReseteable
 
     public void ResetCDs()
     {
-        _cooldown = false;
+        _onCooldown = false;
 
         _tokenCoolDownTimer = false;
     }
@@ -50,7 +47,7 @@ public class ShiftSkill : Skill, IReseteable
     
     public bool CanSkill()
     {
-        return !_cooldown;
+        return !_onCooldown;
     }
    
 }

@@ -629,7 +629,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc0c1004abb00842bcfb7a1cc79499d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shiftTime: 2
+  shiftTime: 10
 --- !u!195 &5933384728347821711
 NavMeshAgent:
   m_ObjectHideFlags: 0

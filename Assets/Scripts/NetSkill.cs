@@ -30,7 +30,7 @@ public class NetSkill : SkillShoot
         _cdTime = data._coolDownTime;
         _lifeTime = data._lifeTime;
         _skillSpeed = data._skillSpeed;
-        _cooldown = false;
+        _onCooldown = false;
         _netColition = false;
 
     }
@@ -73,6 +73,6 @@ public class NetSkill : SkillShoot
 
     internal bool CanSkill()
     {
-        return !_cooldown;
+        return !_onCooldown;
     }
 }

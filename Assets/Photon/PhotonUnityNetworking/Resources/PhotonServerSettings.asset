@@ -88,6 +88,8 @@ MonoBehaviour:
   - RemoveCharacterFromHook
   - HookedByAly
   - HookedByEnemy
+  - ServerNormal
+  - ServerShift
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

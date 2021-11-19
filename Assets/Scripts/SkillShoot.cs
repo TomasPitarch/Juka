@@ -8,7 +8,7 @@ public class SkillShoot : Skill, IReseteable
     Team myTeam;
     public virtual void CastSkillShoot(Vector3 point)
     {
-        if(_cooldown)
+        if(_onCooldown)
         {
             return;
         }
@@ -16,8 +16,8 @@ public class SkillShoot : Skill, IReseteable
 
     public virtual void ResetCDs()
     {
-
         _tokenCoolDownTimer = true;
-        _cooldown = false;
+        _onCooldown = false;
+        
     }
 }

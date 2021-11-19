@@ -28,6 +28,9 @@ public class M : MonoBehaviourPun
     bool _canSkill2 = true;
     bool _canSkill3 = true;
 
+
+    bool movementChecking = false;
+
     [SerializeField]
     public Team myTeam;
 
@@ -60,8 +63,8 @@ public class M : MonoBehaviourPun
         netSkill = GetComponent<NetSkill>();
 
         shiftSkill = GetComponent<ShiftSkill>();
-        shiftSkill.OnShiftStart += GhostForm;
-        shiftSkill.OnShiftEnd += GhostFormEnd;
+        shiftSkill.OnShiftStart += EnterShift;
+        shiftSkill.OnShiftEnd += ExitShift;
 
 
         refreshSkill = GetComponent<RefreshSkill>();
@@ -119,8 +122,6 @@ public class M : MonoBehaviourPun
    
     void DieActionStatus()
     {
-
-        print("14-Die status");
         myNavMesh.ResetPath();
         _canMove = false;
         _canSkill1 = false;
@@ -128,18 +129,20 @@ public class M : MonoBehaviourPun
         _canSkill3 = false;
 
     }
-    void GhostForm()
+    void EnterShift()
     {
         OnGhostStart();
         ShiftActionStatus();
+        photonView.RPC("ServerShift", RpcTarget.MasterClient);
     }
-    void GhostFormEnd()
+    void ExitShift()
     {
         if (photonView.IsMine)
         {
             print("termine mi forma de shift");
             OnGhostEnd();
             NormalActionStatus();
+            photonView.RPC("ServerNormal", RpcTarget.MasterClient);
         }
         else
         {
@@ -197,6 +200,16 @@ public class M : MonoBehaviourPun
         ServerDieStatus();
     }
     [PunRPC]
+    void ServerShift()
+    {
+        GetComponent<Rigidbody>().detectCollisions = false;
+    }
+    [PunRPC]
+    void ServerNormal()
+    {
+        GetComponent<Rigidbody>().detectCollisions = true;
+    }
+    [PunRPC]
     public void ServerRespawn()
     {
         ServerRespawnStatus();
@@ -211,7 +224,6 @@ public class M : MonoBehaviourPun
     //------Server-----//
     void ServerDieStatus()
     {
-        print("13-Se puso para que no colisione");
         GetComponent<Rigidbody>().detectCollisions = false;
     }
     void ServerRespawnStatus()
@@ -230,6 +242,32 @@ public class M : MonoBehaviourPun
         await Task.Delay(5000);
         Respawn();
     }
+    async void WalkingToDestiny()
+    {
+        movementChecking = true;
+
+        while(myNavMesh.pathPending)
+        {
+            print("pathpending");
+            await Task.Yield();
+        }
+
+        while (_canMove && myNavMesh.remainingDistance<0.2f && myNavMesh.hasPath)
+        {
+            print("distance" + myNavMesh.remainingDistance);
+           
+            await Task.Yield();
+        }
+
+        print("_canMove" + _canMove);
+
+        print("pathStatus" + myNavMesh.pathStatus);
+
+        print("myNavMesh.hasPath" + myNavMesh.hasPath);
+
+        movementChecking = false;
+        print("se termino el checkeo");
+    }
     //Actions//
     public void Move(Vector3 destination)
     {
@@ -237,8 +275,17 @@ public class M : MonoBehaviourPun
         {
             myNavMesh.SetDestination(destination);
 
-            OnMove(destination);           
-            
+            //var path = new NavMeshPath();
+            //myNavMesh.CalculatePath(destination, path);
+            //myNavMesh.SetPath(path);
+
+            OnMove(destination);
+
+            if(movementChecking==false)
+            {
+                WalkingToDestiny();
+            }
+
         }
        
     }
@@ -321,12 +368,15 @@ public class M : MonoBehaviourPun
         gameObject.SetActive(true);
         var respawnPosition= ServerManager.Instance.ClientManager.GetRandomReSpawnPoint(myTeam).position;
         myNavMesh.Warp(respawnPosition);
-        
-        OnRespawn();
+
+       
 
         NormalActionStatus();
 
         photonView.RPC("ServerRespawn", RpcTarget.MasterClient);
+
+        print("respawneamos");
+        OnRespawn();
     }
    
 
