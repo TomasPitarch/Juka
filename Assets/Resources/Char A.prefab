@@ -1160,8 +1160,8 @@ MonoBehaviour:
     SynchronizeType: 1
     Name: Shift
   - Type: 9
-    SynchronizeType: 1
-    Name: Hooked
+    SynchronizeType: 0
+    Name: FriendlyHooked
   m_SynchronizeLayers:
   - SynchronizeType: 0
     LayerIndex: 0
@@ -1665,6 +1665,11 @@ PrefabInstance:
       propertyPath: looping
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1448435370102002962, guid: 906d3366fbdd0be4a9532dc14a656cac,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 1644995644721920306, guid: 906d3366fbdd0be4a9532dc14a656cac,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1719,6 +1724,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1644995644721920306, guid: 906d3366fbdd0be4a9532dc14a656cac,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1644995644721920306, guid: 906d3366fbdd0be4a9532dc14a656cac,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1644995644721920306, guid: 906d3366fbdd0be4a9532dc14a656cac,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1648055354435725550, guid: 906d3366fbdd0be4a9532dc14a656cac,
         type: 3}
