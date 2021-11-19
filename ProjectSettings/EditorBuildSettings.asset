@@ -14,4 +14,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TeamsScene.unity
     guid: 9ba50083135bd4a44978d4cb28f57f26
+  - enabled: 1
+    path: Assets/Scenes/Win.unity
+    guid: 602a60cc80d542e41a45efb07b96d516
+  - enabled: 1
+    path: Assets/Scenes/Lose.unity
+    guid: 9be4a83f45e636149a91e78f4bad6549
   m_configObjects: {}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Photon.Realtime;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
 
 public sealed class ServerManager:MonoBehaviourPun
@@ -134,11 +135,11 @@ public sealed class ServerManager:MonoBehaviourPun
     {
         if(ClientManager.MyTeam==winnerTeam)
         {
-            print("Win");
+            SceneManager.LoadScene("Win");
         }
         else
         {
-            print("Lose");
+            SceneManager.LoadScene("Lose");
         }
     }
 
